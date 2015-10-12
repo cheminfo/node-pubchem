@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/cheminfo/node-pubchem/issues"
   },
-  "homepage": "https://github.com/cheminfo/node-pubchem#readme"
+  "homepage": "https://github.com/cheminfo/node-pubchem#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "commander": "^2.8.1",
+    "debug": "^2.2.0",
+    "ftp": "^0.3.10"
+  }
 }
