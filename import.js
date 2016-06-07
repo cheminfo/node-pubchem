@@ -8,12 +8,13 @@ const bluebird = require('bluebird');
 const co = require('co');
 const fs = bluebird.promisifyAll(require('fs'));
 const MongoClient = require('mongodb').MongoClient;
-const OCL = require('openchemlib');
 const path = require('path');
 const sdfParser = require('sdf-parser');
 const zlib = require('zlib');
 
 const config = require('./config.json');
+
+const getMolecule = require('./molecule').getMolecule;
 
 const dataDir = config.data;
 
@@ -54,21 +55,7 @@ co(function*() {
         for (let j = 0; j < molecules.length; j++) {
             const molecule = molecules[j];
             if (molecule.PUBCHEM_COMPOUND_CID <= progress.lastID) continue;
-            const oclMol = OCL.Molecule.fromMolfile(molecule.molfile);
-            const oclID = oclMol.getIDCodeAndCoordinates();
-            const result = {
-                _id: +molecule.PUBCHEM_COMPOUND_CID,
-                ocl: {
-                    id: oclID.idCode,
-                    coord: oclID.coordinates
-                },
-                inchi: molecule.PUBCHEM_IUPAC_INCHI,
-                inchiKey: molecule.PUBCHEM_IUPAC_INCHIKEY,
-                iupac: molecule.PUBCHEM_IUPAC_NAME,
-                mf: molecule.PUBCHEM_MOLECULAR_FORMULA,
-                em: molecule.PUBCHEM_EXACT_MASS,
-                mw: molecule.PUBCHEM_MOLECULAR_WEIGHT
-            };
+            const result = getMolecule(molecule);
             yield dataCollection.insertOne(result);
             progress.lastID = result._id;
             yield adminCollection.updateOne({_id: progress._id}, progress);
