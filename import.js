@@ -37,7 +37,6 @@ co(function*() {
     }
 
     const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
-    console.log(lastDocument);
     let firstID = lastDocument ? lastDocument._id : 0;
 
     const dataFiles = yield fs.readdirAsync(dataDir);
