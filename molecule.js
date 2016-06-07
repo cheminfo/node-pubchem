@@ -12,6 +12,7 @@ exports.getMolecule = function (molecule) {
     atoms.forEach(a => atom[a.element] = a.number);
     const result = {
         _id: +molecule.PUBCHEM_COMPOUND_CID,
+        seq: 0,
         ocl: {
             id: oclID.idCode,
             coord: oclID.coordinates

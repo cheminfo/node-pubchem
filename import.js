@@ -26,18 +26,22 @@ co(function*() {
     const adminCollection = getCollection(db, 'admin');
     const dataCollection = getCollection(db, 'data');
 
-    let progress = yield adminCollection.find().limit(1).next();
+    let progress = yield adminCollection.find({_id: 'main_progress'}).next();
     if (progress === null) {
         progress = {
-            _id: 'progress',
-            lastID: 0,
+            _id: 'main_progress',
+            seq: 0,
             date: new Date()
         };
         yield adminCollection.insertOne(progress);
     }
 
+    const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
+    console.log(lastDocument);
+    let firstID = lastDocument ? lastDocument._id : 0;
+
     const dataFiles = yield fs.readdirAsync(dataDir);
-    const firstName = getNextFilename(progress.lastID);
+    const firstName = getNextFilename(firstID);
 
     const firstIndex = dataFiles.findIndex(n => n === firstName);
 
@@ -54,10 +58,10 @@ co(function*() {
         const molecules = sdfParser(strValue).molecules;
         for (let j = 0; j < molecules.length; j++) {
             const molecule = molecules[j];
-            if (molecule.PUBCHEM_COMPOUND_CID <= progress.lastID) continue;
+            if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
             const result = getMolecule(molecule);
-            yield dataCollection.insertOne(result);
-            progress.lastID = result._id;
+            result.seq = ++progress.seq;
+            yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
             yield adminCollection.updateOne({_id: progress._id}, progress);
         }
     }
