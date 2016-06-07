@@ -46,6 +46,7 @@ co(function*() {
 
     console.log(`starting with file ${firstName}`);
     for (let i = firstIndex; i < dataFiles.length; i++) {
+        if (!dataFiles[i].endsWith('.sdf.gz')) continue;
         console.log(`treating file ${dataFiles[i]}`);
         const gzValue = yield fs.readFileAsync(path.join(dataDir, dataFiles[i]));
         const strValue = zlib.gunzipSync(gzValue).toString();
