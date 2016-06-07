@@ -17,5 +17,11 @@
   },
   "homepage": "https://github.com/cheminfo/node-pubchem#readme",
   "dependencies": {
+    "bluebird": "^3.4.0",
+    "chemcalc": "^3.0.6",
+    "co": "^4.6.0",
+    "mongodb": "^2.1.21",
+    "openchemlib": "^4.3.0",
+    "sdf-parser": "^2.2.0"
   }
 }
