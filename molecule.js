@@ -6,7 +6,7 @@ const chemcalc = require('chemcalc');
 exports.getMolecule = function (molecule) {
     const oclMol = OCL.Molecule.fromMolfile(molecule.molfile);
     const oclID = oclMol.getIDCodeAndCoordinates();
-    const chemcalcMF = chemcalc.analyseMF(molecule.PUBCHEM_MOLECULAR_FORMULA.replace(/[+-].*/, ''));
+    const chemcalcMF = chemcalc.analyseMF(molecule.PUBCHEM_MOLECULAR_FORMULA.replace(/([+-].*)/, '($1)'));
     const atom = {};
     var atoms = chemcalcMF.parts[0].ea;
     atoms.forEach(a => atom[a.element] = a.number);
