@@ -17,6 +17,7 @@ const config = require('./config.json');
 const getMolecule = require('./molecule').getMolecule;
 
 const dataDir = config.data;
+const kHalfStringMaxLength = 268435440 / 2;
 
 let db;
 co(function*() {
@@ -53,15 +54,22 @@ co(function*() {
         if (!dataFiles[i].endsWith('.sdf.gz')) continue;
         console.log(`treating file ${dataFiles[i]}`);
         const gzValue = yield fs.readFileAsync(path.join(dataDir, dataFiles[i]));
-        const strValue = zlib.gunzipSync(gzValue).toString();
-        const molecules = sdfParser(strValue).molecules;
-        for (let j = 0; j < molecules.length; j++) {
-            const molecule = molecules[j];
-            if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
-            const result = getMolecule(molecule);
-            result.seq = ++progress.seq;
-            yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
-            yield adminCollection.updateOne({_id: progress._id}, progress);
+        const bufferValue = zlib.gunzipSync(gzValue);
+        let n = 0, nextIndex = 0;
+        while (n < bufferValue.length) {
+            nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
+            if (nextIndex === -1) nextIndex = bufferValue.length;
+            const strValue = bufferValue.slice(n, nextIndex).toString();
+            const molecules = sdfParser(strValue).molecules;
+            for (let j = 0; j < molecules.length; j++) {
+                const molecule = molecules[j];
+                if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
+                const result = getMolecule(molecule);
+                result.seq = ++progress.seq;
+                yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
+                yield adminCollection.updateOne({_id: progress._id}, progress);
+            }
+            n = nextIndex;
         }
     }
     
