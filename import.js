@@ -73,7 +73,9 @@ co(function*() {
             n = nextIndex;
         }
     }
-    
+
+    progress.state = 'update';
+    yield adminCollection.updateOne({_id: progress._id}, progress);
 }).catch(function (e) {
     console.log('error');
     console.error(e);
