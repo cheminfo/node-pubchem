@@ -30,7 +30,7 @@ co(function*() {
     let progress = yield adminCollection.find({_id: 'main_progress'}).next();
     if (!progress || progress.state !== 'update') throw new Error('run import first');
 
-    const lastFile = progress.file || '';
+    let lastFile = progress.file || '';
     const lastDate = progress.date;
     const weeklyDirs = yield fs.readdirAsync(dataDir);
 
@@ -41,17 +41,19 @@ co(function*() {
         const weekDir = path.join(dataDir, week);
 
         // remove killed compounds
-        let killed;
-        try {
-            const killedFile = yield fs.readFileAsync(path.join(weekDir, 'killed-CIDs'), 'ascii');
-            killed = killedFile.split(/\r\n|\r|\n/).map(Number);
-        } catch (e) {
-            if (e.code !== 'ENOENT') throw e;
-        }
-        if (killed) {
-            console.log(`removing ${killed.length} killed IDs`);
-            for (const killedID of killed) {
-                yield dataCollection.deleteOne({_id: killedID});
+        if (!lastFile) {
+            let killed;
+            try {
+                const killedFile = yield fs.readFileAsync(path.join(weekDir, 'killed-CIDs'), 'ascii');
+                killed = killedFile.split(/\r\n|\r|\n/).map(Number);
+            } catch (e) {
+                if (e.code !== 'ENOENT') throw e;
+            }
+            if (killed) {
+                console.log(`removing ${killed.length} killed IDs`);
+                for (const killedID of killed) {
+                    yield dataCollection.deleteOne({_id: killedID});
+                }
             }
         }
 
@@ -85,7 +87,7 @@ co(function*() {
         }
 
         progress.date = weekDate;
-        progress.file = '';
+        lastFile = progress.file = '';
         yield adminCollection.updateOne({_id: progress._id}, progress);
     }
 }).catch(function (e) {
