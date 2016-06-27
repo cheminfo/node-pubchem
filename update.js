@@ -57,6 +57,7 @@ co(function*() {
         const sdfDir = path.join(weekDir, 'SDF');
         const sdfList = yield fs.readdirAsync(sdfDir);
         for (const sdfFile of sdfList) {
+            if (!sdfFile.endsWith('.sdf.gz')) continue;
             const sdfPath = path.join(sdfDir, sdfFile);
             console.log(`treating file ${sdfFile}`);
             const gzValue = yield fs.readFileAsync(sdfPath);
@@ -91,17 +92,4 @@ co(function*() {
 
 function getCollection(db, name) {
     return db.collection(name);
-}
-
-const elementsPerRange = 25000;
-function getNextFilename(id) {
-    const factor = Math.floor(id / elementsPerRange);
-    const start = 25000 * factor + 1;
-    const end = 25000 * (factor + 1);
-    return `Compound_${addZeros(start)}_${addZeros(end)}.sdf.gz`;
-}
-
-function addZeros(value) {
-    var str = String(value);
-    return '0'.repeat(9 - str.length) + str;
 }
