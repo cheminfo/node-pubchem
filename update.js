@@ -60,7 +60,7 @@ co(function*() {
         const sdfList = yield fs.readdirAsync(sdfDir);
         for (const sdfFile of sdfList) {
             if (!sdfFile.endsWith('.sdf.gz')) continue;
-            if (lastFile && lastFile > sdfFile) continue;
+            if (lastFile && lastFile >= sdfFile) continue;
             const sdfPath = path.join(sdfDir, sdfFile);
             console.log(`treating file ${sdfFile}`);
             const gzValue = yield fs.readFileAsync(sdfPath);
