@@ -16,7 +16,7 @@ const config = require('./config.json');
 
 const getMolecule = require('./molecule').getMolecule;
 
-const dataDir = path.join(config.data, 'CURRENT-Full/SDF');
+const dataDir = path.join(config.data, 'Weekly');
 const kHalfStringMaxLength = 268435440 / 2;
 
 let db;
@@ -28,16 +28,10 @@ co(function*() {
     const dataCollection = getCollection(db, 'data');
 
     let progress = yield adminCollection.find({_id: 'main_progress'}).next();
-    if (progress === null) {
-        progress = {
-            _id: 'main_progress',
-            seq: 0,
-            date: new Date()
-        };
-        yield adminCollection.insertOne(progress);
-    }
 
-    const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
+    console.log(progress);
+
+    /*const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
     let firstID = lastDocument ? lastDocument._id : 0;
 
     const dataFiles = yield fs.readdirAsync(dataDir);
@@ -71,7 +65,7 @@ co(function*() {
             }
             n = nextIndex;
         }
-    }
+    }*/
     
 }).catch(function (e) {
     console.log('error');
