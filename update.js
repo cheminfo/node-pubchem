@@ -28,7 +28,9 @@ co(function*() {
     const dataCollection = getCollection(db, 'data');
 
     let progress = yield adminCollection.find({_id: 'main_progress'}).next();
+    if (!progress || progress.state !== 'update') throw new Error('run import first');
 
+    const lastFile = progress.file || '';
     const lastDate = progress.date;
     const weeklyDirs = yield fs.readdirAsync(dataDir);
 
@@ -58,6 +60,7 @@ co(function*() {
         const sdfList = yield fs.readdirAsync(sdfDir);
         for (const sdfFile of sdfList) {
             if (!sdfFile.endsWith('.sdf.gz')) continue;
+            if (lastFile && lastFile > sdfFile) continue;
             const sdfPath = path.join(sdfDir, sdfFile);
             console.log(`treating file ${sdfFile}`);
             const gzValue = yield fs.readFileAsync(sdfPath);
@@ -77,9 +80,12 @@ co(function*() {
                 }
                 n = nextIndex;
             }
+            progress.file = sdfFile;
+            yield adminCollection.updateOne({_id: progress._id}, progress);
         }
 
         progress.date = weekDate;
+        progress.file = '';
         yield adminCollection.updateOne({_id: progress._id}, progress);
     }
 }).catch(function (e) {

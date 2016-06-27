@@ -31,6 +31,7 @@ co(function*() {
     if (progress === null) {
         progress = {
             _id: 'main_progress',
+            state: 'import',
             seq: 0,
             date: new Date()
         };
