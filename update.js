@@ -46,7 +46,9 @@ co(function*() {
             if (e.code !== 'ENOENT') throw e;
         }
         if (killed) {
-            console.log(killed);
+            for (const killedID of killed) {
+                yield dataCollection.deleteOne({_id: killedID});
+            }
         }
     }
 
