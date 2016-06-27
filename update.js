@@ -42,7 +42,7 @@ co(function*() {
         let killed;
         try {
             const killedFile = yield fs.readFileAsync(path.join(weekDir, 'killed-CIDs'), 'ascii');
-            killed = killedFile.split(/\r|\n|\r\n/).map(Number);
+            killed = killedFile.split(/\r\n|\r|\n/).map(Number);
         } catch (e) {
             if (e.code !== 'ENOENT') throw e;
         }
