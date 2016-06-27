@@ -34,7 +34,7 @@ co(function*() {
 
     for (const week of weeklyDirs) {
         const weekDate = new Date(week);
-        if (weekDate < lastDate) continue;
+        if (weekDate <= lastDate) continue;
         console.log(`treating directory ${week}`);
         const weekDir = path.join(dataDir, week);
 
