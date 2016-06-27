@@ -35,6 +35,7 @@ co(function*() {
     for (const week of weeklyDirs) {
         const weekDate = new Date(week);
         if (weekDate < lastDate) continue;
+        console.log(`treating directory ${week}`);
         const weekDir = path.join(dataDir, week);
 
         // remove killed compounds
@@ -46,48 +47,40 @@ co(function*() {
             if (e.code !== 'ENOENT') throw e;
         }
         if (killed) {
+            console.log(`removing ${killed.length} killed IDs`);
             for (const killedID of killed) {
                 yield dataCollection.deleteOne({_id: killedID});
             }
         }
-    }
 
-    /*const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
-    let firstID = lastDocument ? lastDocument._id : 0;
-
-    const dataFiles = yield fs.readdirAsync(dataDir);
-    const firstName = getNextFilename(firstID);
-
-    const firstIndex = dataFiles.findIndex(n => n === firstName);
-
-    if (firstIndex === -1) {
-        throw new Error('file not found: ' + firstName);
-    }
-
-    console.log(`starting with file ${firstName}`);
-    for (let i = firstIndex; i < dataFiles.length; i++) {
-        if (!dataFiles[i].endsWith('.sdf.gz')) continue;
-        console.log(`treating file ${dataFiles[i]}`);
-        const gzValue = yield fs.readFileAsync(path.join(dataDir, dataFiles[i]));
-        const bufferValue = zlib.gunzipSync(gzValue);
-        let n = 0, nextIndex = 0;
-        while (n < bufferValue.length) {
-            nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
-            if (nextIndex === -1) nextIndex = bufferValue.length;
-            const strValue = bufferValue.slice(n, nextIndex).toString();
-            const molecules = sdfParser(strValue).molecules;
-            for (let j = 0; j < molecules.length; j++) {
-                const molecule = molecules[j];
-                if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
-                const result = getMolecule(molecule);
-                result.seq = ++progress.seq;
-                yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
-                yield adminCollection.updateOne({_id: progress._id}, progress);
+        // insert new or updated compounds
+        const sdfDir = path.join(weekDir, 'SDF');
+        const sdfList = yield fs.readdirAsync(sdfDir);
+        for (const sdfFile of sdfList) {
+            const sdfPath = path.join(sdfDir, sdfFile);
+            console.log(`treating file ${sdfFile}`);
+            const gzValue = yield fs.readFileAsync(sdfPath);
+            const bufferValue = zlib.gunzipSync(gzValue);
+            let n = 0, nextIndex = 0;
+            while (n < bufferValue.length) {
+                nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
+                if (nextIndex === -1) nextIndex = bufferValue.length;
+                const strValue = bufferValue.slice(n, nextIndex).toString();
+                const molecules = sdfParser(strValue).molecules;
+                for (let j = 0; j < molecules.length; j++) {
+                    const molecule = molecules[j];
+                    const result = getMolecule(molecule);
+                    result.seq = ++progress.seq;
+                    yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
+                    yield adminCollection.updateOne({_id: progress._id}, progress);
+                }
+                n = nextIndex;
             }
-            n = nextIndex;
         }
-    }*/
-    
+
+        progress.date = weekDate;
+        yield adminCollection.updateOne({_id: progress._id}, progress);
+    }
 }).catch(function (e) {
     console.log('error');
     console.error(e);
