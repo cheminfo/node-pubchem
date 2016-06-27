@@ -29,7 +29,26 @@ co(function*() {
 
     let progress = yield adminCollection.find({_id: 'main_progress'}).next();
 
-    console.log(progress);
+    const lastDate = progress.date;
+    const weeklyDirs = yield fs.readdirAsync(dataDir);
+
+    for (const week of weeklyDirs) {
+        const weekDate = new Date(week);
+        if (weekDate < lastDate) continue;
+        const weekDir = path.join(dataDir, week);
+
+        // remove killed compounds
+        let killed;
+        try {
+            const killedFile = yield fs.readFileAsync(path.join(weekDir, 'killed-CIDs'), 'ascii');
+            killed = killedFile.split(/\r|\n|\r\n/).map(Number);
+        } catch (e) {
+            if (e.code !== 'ENOENT') throw e;
+        }
+        if (killed) {
+            console.log(killed);
+        }
+    }
 
     /*const lastDocument = yield dataCollection.find({seq: {$lte: progress.seq}}).sort('_id', -1).limit(1).next();
     let firstID = lastDocument ? lastDocument._id : 0;
