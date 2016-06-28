@@ -39,7 +39,8 @@ const searchEm = co.wrap(function* em(value, options) {
                     em: resultValue.em,
                     ppm: Math.abs(resultValue.em - value) / value * 1e6,
                     molecules: []
-                }
+                };
+                uniqueMFs.set(resultValue.mf, element);
             }
             element.molecules.push({
                 id: resultValue._id,
@@ -48,7 +49,9 @@ const searchEm = co.wrap(function* em(value, options) {
         }
     });
 
-    return results;
+    const finalResult = Array.from(uniqueMFs.values());
+    finalResult.sort((a, b) => a.ppm - b.ppm);
+    return finalResult;
 });
 
 exports.search = {
