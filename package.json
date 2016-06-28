@@ -20,6 +20,9 @@
     "bluebird": "^3.4.0",
     "chemcalc": "^3.0.6",
     "co": "^4.6.0",
+    "kcors": "^1.2.1",
+    "koa": "^1.2.0",
+    "koa-router": "^5.4.0",
     "mongodb": "^2.1.21",
     "openchemlib": "^4.3.0",
     "sdf-parser": "^2.2.0"
