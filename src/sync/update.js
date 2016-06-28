@@ -7,12 +7,12 @@ process.on('unhandledRejection', function (e) {
 const bluebird = require('bluebird');
 const co = require('co');
 const fs = bluebird.promisifyAll(require('fs'));
-const MongoClient = require('mongodb').MongoClient;
 const path = require('path');
 const sdfParser = require('sdf-parser');
 const zlib = require('zlib');
 
-const config = require('./config.json');
+const config = require('config');
+const mongo = require('mongo');
 
 const getMolecule = require('./molecule').getMolecule;
 
@@ -21,7 +21,7 @@ const kHalfStringMaxLength = 268435440 / 2;
 
 let db;
 co(function*() {
-    db = yield MongoClient.connect(config.mongodb, {autoReconnect: true});
+    db = yield mongo.connect();
     console.log('connected to MongoDB');
 
     const adminCollection = getCollection(db, 'admin');
