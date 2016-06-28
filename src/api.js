@@ -37,7 +37,7 @@ const searchEm = co.wrap(function* em(value, options) {
                 element = {
                     mf: resultValue.mf,
                     em: resultValue.em,
-                    ppm: Math.abs(resultValue.em - value) / value * 1e6,
+                    ppm: Math.round(Math.abs(resultValue.em - value) / value * 1e6),
                     molecules: []
                 };
                 uniqueMFs.set(resultValue.mf, element);
