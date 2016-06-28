@@ -26,15 +26,31 @@ const searchEm = co.wrap(function* em(value, options) {
 
     const data = yield dataCollection;
     const searchBottom = data.find({em: {$lte: value, $gte: value - error}}).sort({em: -1}).limit(options.limit).project({'ocl.id': 1, mf: 1, em: 1}).toArray();
-    const searchTop = data.find({em: {$gte: value, $lte: value + error}}).sort({em: 1}).limit(options.limit).project({'ocl.id': 1, mf: 1, em: 1}).toArray();
-    const [resultBottom, resultTop] = yield Promise.all([searchBottom, searchTop]);
+    const searchTop = data.find({em: {$gt: value, $lte: value + error}}).sort({em: 1}).limit(options.limit).project({'ocl.id': 1, mf: 1, em: 1}).toArray();
+    const results = yield Promise.all([searchBottom, searchTop]);
 
-    console.log('bottom');
-    console.log(resultBottom);
-    console.log('top');
-    console.log(resultTop);
+    const uniqueMFs = new Map();
+    results.forEach(function treatResult(result) {
+        for (const resultValue of result) {
+            let element = uniqueMFs.get(resultValue.mf);
+            if (!element) {
+                element = {
+                    mf: resultValue.mf,
+                    em: resultValue.em,
+                    ppm: Math.abs(resultValue.em - value) / value * 1e6,
+                    molecules: []
+                }
+            }
+            element.molecules.push({
+                id: resultValue._id,
+                oclID: resultValue.ocl.id,
+            });
+        }
+    });
+
+    return results;
 });
 
 exports.search = {
-    searchEm
+    em: searchEm
 };
