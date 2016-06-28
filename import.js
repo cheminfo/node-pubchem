@@ -21,7 +21,7 @@ const kHalfStringMaxLength = 268435440 / 2;
 
 let db;
 co(function*() {
-    db = yield MongoClient.connect(config.mongodb);
+    db = yield MongoClient.connect(config.mongodb, {autoReconnect: true});
     console.log('connected to MongoDB');
 
     const adminCollection = getCollection(db, 'admin');
