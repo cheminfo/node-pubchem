@@ -9,7 +9,7 @@ router.get('/search/em', function*() {
     if (!value) {
         return error(this, 'missing value');
     }
-    this.body = yield router.search.em(value, this.query);
+    this.body = yield api.search.em(value, this.query);
 });
 
 function error(ctx, message) {
