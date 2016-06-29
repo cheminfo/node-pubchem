@@ -18,6 +18,16 @@ router.get('/search/em', function*() {
     };
 });
 
+router.get('/molecules/em', function*() {
+    const value = +this.query.value;
+    if (!value) {
+        return error(this, 'missing value');
+    }
+    this.body = {
+        result: yield api.molecules.em(value)
+    };
+});
+
 function error(ctx, message) {
     ctx.status = 400;
     ctx.body = {
