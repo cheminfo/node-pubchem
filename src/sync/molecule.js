@@ -20,7 +20,6 @@ exports.getMolecule = function (molecule) {
             id: oclID.idCode,
             coord: oclID.coordinates
         },
-        nbFragments: fragments,
         // inchi: molecule.PUBCHEM_IUPAC_INCHI,
         // inchiKey: molecule.PUBCHEM_IUPAC_INCHIKEY,
         iupac: molecule.PUBCHEM_IUPAC_NAME,
@@ -28,7 +27,8 @@ exports.getMolecule = function (molecule) {
         em: molecule.PUBCHEM_EXACT_MASS,
         mw: molecule.PUBCHEM_MOLECULAR_WEIGHT,
         unsat: chemcalcMF.parts[0].unsaturation,
-        atom
+        atom,
+        nbFragments: fragments
     };
     return result;
 };
