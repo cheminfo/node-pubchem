@@ -4,6 +4,7 @@ var data = db.data;
 
 data.aggregate([
 //    { $limit: 1e4 },
+    { $match: { nbFragments: 1 } },
     { $project: { mf: 1, em: 1, unsat: 1, atom: 1 } },
     { $group: { _id: '$mf', count: { $sum: 1 }, em: { $first: '$em' }, unsaturation: { $first: '$unsat'}, atom: { $first: '$atom' } } },
     { $out: 'aggregateMf' }
