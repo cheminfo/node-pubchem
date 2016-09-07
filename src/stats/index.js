@@ -10,9 +10,9 @@ const fs = bluebird.promisifyAll(require('fs'));
 const mlStat = require('ml-stat/array');
 
 const mongo = require('mongo');
+const functions = require('mf');
+const rules = require('rules');
 
-const rules = require('./rules.json');
-const allowedElements = rules.allowedElements;
 const minMass = rules.minMass;
 const maxMass = rules.maxMass;
 const stepMass = rules.stepMass;
@@ -30,12 +30,12 @@ co(function*() {
     const formulas = [];
     while (yield cursor.hasNext()) {
         const nextValue = yield cursor.next();
-        if (isFormulaAllowed(nextValue)) {
+        if (functions.isFormulaAllowed(nextValue, minMass, maxMass)) {
             formulas.push(nextValue);
         }
     }
     formulas.sort((a, b) => a.em - b.em);
-    addRatios(formulas);
+    functions.addRatios(formulas);
 
     var bins = [];
     var start = 0;
@@ -69,45 +69,6 @@ co(function*() {
     console.error('closing DB');
     if (db) db.close();
 });
-
-function isFormulaAllowed(formula) {
-    if (formula.em > maxMass || formula.em < minMass) {
-        return false;
-    }
-    if (!('C' in formula.atom)) {
-        return false;
-    }
-    for (var key in formula.atom) {
-        if (!allowedElements.includes(key)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function addRatios(formulas) {
-    for (var j = 0; j < elementRatios.length; j++) {
-        var topAtoms = elementRatios[j].split('/')[0];
-        var bottomAtoms = elementRatios[j].split('/')[1];
-        var topAtomsArray = topAtoms.split(/(?=[A-Z])/);
-        var bottomAtomsArray = bottomAtoms.split(/(?=[A-Z])/);
-        for (var i = 0; i < formulas.length; i++) {
-            var mf = formulas[i];
-            if (j === 0) mf.ratios = {};
-            var top = getSumAtoms(topAtomsArray, mf);
-            var bottom = getSumAtoms(bottomAtomsArray, mf);
-            mf.ratios[elementRatios[j]] = top / bottom;
-        }
-    }
-}
-
-function getSumAtoms(atoms, mf) {
-    var sum = 0;
-    for (var k = 0; k < atoms.length; k++) {
-        if (mf.atom[atoms[k]]) sum += mf.atom[atoms[k]];
-    }
-    return sum;
-}
 
 function getStats(mfs) {
     var stats = [];

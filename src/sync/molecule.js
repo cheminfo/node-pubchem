@@ -2,6 +2,7 @@
 
 const OCL = require('openchemlib');
 const chemcalc = require('chemcalc');
+const mf = require('mf');
 
 const fragmentContainer = new Array(1024);
 
@@ -10,9 +11,6 @@ exports.getMolecule = function (molecule) {
     const oclID = oclMol.getIDCodeAndCoordinates();
     const fragments = oclMol.getFragmentNumbers(fragmentContainer);
     const chemcalcMF = chemcalc.analyseMF(molecule.PUBCHEM_MOLECULAR_FORMULA.replace(/([+-].*)/, '($1)'));
-    const atom = {};
-    var atoms = chemcalcMF.parts[0].ea;
-    atoms.forEach(a => atom[a.element] = a.number);
     const result = {
         _id: +molecule.PUBCHEM_COMPOUND_CID,
         seq: 0,
@@ -27,7 +25,7 @@ exports.getMolecule = function (molecule) {
         em: molecule.PUBCHEM_EXACT_MASS,
         mw: molecule.PUBCHEM_MOLECULAR_WEIGHT,
         unsat: chemcalcMF.parts[0].unsaturation,
-        atom,
+        atom: mf.getAtoms(chemcalcMF),
         nbFragments: fragments
     };
     return result;
