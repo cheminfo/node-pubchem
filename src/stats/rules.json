@@ -1,0 +1,11 @@
+{
+  "minMass": 100,
+  "maxMass": 1000,
+  "stepMass": 100,
+  "allowedElements": ["H", "C", "O", "N", "S", "P", "F", "Cl", "Br"],
+  "elementRatios": ["C/H", "C/N", "C/O", "C/OS", "C/OP", "C/FClBr", "O/P", "O/S", "C/ONSPFClBr", "CCNP/HFClBr"],
+  "ratioMinValue": -8,
+  "ratioMaxValue": 8,
+  "ratioSlotWidth": 0.2,
+  "weighted": false
+}
