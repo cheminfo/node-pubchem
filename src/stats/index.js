@@ -86,9 +86,9 @@ function getStats(mfs) {
 
         for (var i = 0; i < mfs.length; i++) {
             var ratio = mfs[i].ratios[key];
-            if (ratio === 0) {
+            if (ratio === -Infinity) { // Math.log2(0)
                 stat.zeros++;
-            } else if (Number.isNaN(ratio) || ratio === Infinity) {
+            } else if (Number.isNaN(ratio) || ratio === Infinity) { // Math.log2(NaN) || Math.log2(Infinity)
                 stat.infinities++;
             } else {
                 stat.valids++;
