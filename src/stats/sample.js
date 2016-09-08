@@ -38,7 +38,15 @@ co(function*() {
         }
     }
     const formulas = Array.from(formulaSet);
-    const result = formulas.map(analyseFormula);
+    const result = new Array(formulas.length);
+    for (var j = 0; j < formulas.length; j++) {
+        try {
+            result[j] = analyseFormula(formulas[j], j);
+        } catch (e) {
+            console.error('error!');
+            result[j] = null;
+        }
+    }
     console.log(JSON.stringify(result, null, 2));
 }).catch(function (e) {
     console.error('error');
@@ -66,6 +74,8 @@ function analyseFormula(mf, index) {
         mfRange: rules.sampleMfRange,
         massRange: em * ppm[ppm.length - 1] / 1e6,
         useUnsaturation: true,
+        integerUnsaturation: true,
+        minUnsaturation: -5,
         maxNumberRows: 1e6
     });
     var candidatesList = allCandidates.results;
@@ -88,10 +98,10 @@ function analyseFormula(mf, index) {
 
         result.ppm[i] = {
             numberResults: candidates.length,
+            meanIndex: Math.ceil(candidates.length / 2),
             ratioIndex: sortedIndex,
             ratioScore: candidates[sortedIndex].ratioScore,
-            thisRatio: candidates[sortedIndex],
-            bestRatio: candidates[0]
+            thisRatio: candidates[sortedIndex]
         };
     }
 
