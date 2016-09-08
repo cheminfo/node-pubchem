@@ -102,23 +102,19 @@ function calculateScores(candidates) {
     for (var i = 0; i < candidates.length; i++) {
         var candidate = candidates[i];
         var em = candidate.em;
-        var ratioStat = ratioStats.find((stat) => {
-            return em >= stat.minMass && em < stat.maxMass;
-        }).stats;
+        var ratioStat = ratioStats.find((stat) => em >= stat.minMass && em < stat.maxMass).stats;
         var score = 1;
+        var totalRatios = 0;
         for (var j = 0; j < ratioStat.length; j++) {
             var stat = ratioStat[j];
             var kind = stat.kind;
             var ratio = candidate.ratios[kind];
-            var mean = stat.mean;
-            var sd = stat.standardDeviation;
             if (ratio && ratio !== 0 && ratio !== Infinity) {
-                var distance = Math.abs(ratio - mean) / sd;
-                if (distance > 2) {
-                    score *= Math.pow(penality, distance - 2);
-                }
+                totalRatios++;
+                var distance = Math.abs(ratio - stat.mean) / stat.standardDeviation;
+                score *= Math.pow(penality, distance);
             }
         }
-        candidate.ratioScore = score;
+        candidate.ratioScore = Math.pow(score, 1 / totalRatios);
     }
 }
