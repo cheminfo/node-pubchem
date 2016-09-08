@@ -92,17 +92,16 @@ function getStats(mfs) {
                 stat.infinities++;
             } else {
                 stat.valids++;
-                var ratioLN = Math.log2(ratio);
-                log2array.push(ratioLN);
-                if (ratioLN < rules.ratioMinValue) {
+                log2array.push(ratio);
+                if (ratio < rules.ratioMinValue) {
                     stat.distribution[0] += rules.weighted ? mfs[i].count : 1;
                     // the first slot
                 }
-                if (ratioLN > rules.ratioMaxValue) {
+                if (ratio > rules.ratioMaxValue) {
                     stat.distribution[distributionLength - 1] += rules.weighted ? mfs[i].count : 1;
                     // the last slot
                 } else {
-                    var slot = Math.floor(((ratioLN - rules.ratioMinValue) / rules.ratioSlotWidth - 1));
+                    var slot = Math.floor(((ratio - rules.ratioMinValue) / rules.ratioSlotWidth - 1));
                     // eg. min = -10, max = 10, width = 0.5. For ratioLN = -8, slot is 3.
 
                     /* var slot = Math.floor((ratioLN+7)*5); */
