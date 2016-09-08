@@ -97,6 +97,7 @@ function analyseFormula(mf, index) {
         var sortedIndex = candidates.findIndex((cand) => cand.em === em);
 
         result.ppm[i] = {
+            ppm: ppmValue,
             numberResults: candidates.length,
             meanIndex: Math.ceil(candidates.length / 2),
             ratioIndex: sortedIndex,
