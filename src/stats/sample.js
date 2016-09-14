@@ -120,7 +120,7 @@ function calculateScores(candidates) {
             var stat = ratioStat[j];
             var kind = stat.kind;
             var ratio = candidate.ratios[kind];
-            if (ratio && ratio !== 0 && ratio !== Infinity) {
+            if (!Number.isNaN(ratio) && ratio !== -Infinity && ratio !== Infinity) {
                 totalRatios++;
                 var distance = Math.abs(ratio - stat.mean) / stat.standardDeviation;
                 score *= Math.pow(penality, distance);
