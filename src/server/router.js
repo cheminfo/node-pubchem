@@ -11,8 +11,7 @@ router.get('/search/em', function*() {
     }
     const options = {};
     if (this.query.limit) options.limit = +this.query.limit;
-    if (this.query.resolution) options.resolution = +this.query.resolution;
-    if (this.query.accuracy) options.accuracy = +this.query.accuracy;
+    if (this.query.precision) options.precision = +this.query.precision;
     this.body = {
         result: yield api.search.em(value, options)
     };
