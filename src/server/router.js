@@ -28,7 +28,7 @@ router.get('/molecules/em', function*() {
 });
 
 router.get('/molecules/mf', function*() {
-    const value = +this.query.value;
+    const value = this.query.value;
     if (!value) {
         return error(this, 'missing value');
     }
