@@ -18,22 +18,14 @@ router.get('/search/em', function*() {
 });
 
 router.get('/molecules/em', function*() {
-    const value = +this.query.value;
-    if (!value) {
-        return error(this, 'missing value');
-    }
     this.body = {
-        result: yield api.molecules.em(value)
+        result: yield api.molecules.em(this.query)
     };
 });
 
 router.get('/molecules/mf', function*() {
-    const value = this.query.value;
-    if (!value) {
-        return error(this, 'missing value');
-    }
     this.body = {
-        result: yield api.molecules.mf(value)
+        result: yield api.molecules.mf(this.query)
     };
 });
 
