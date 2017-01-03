@@ -36,9 +36,9 @@ buffer-shims@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
 
-chemcalc@^3.0.6:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.1.0.tgz#465c97e7a15bfc2cfb733c157a58037d825c9b72"
+chemcalc@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.2.0.tgz#71b1b6ae6bee4517e3fe6cd38530067dbf572dc2"
 
 co@^4.0.2, co@^4.4.0, co@^4.6.0:
   version "4.6.0"
@@ -330,7 +330,7 @@ only@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
 
-openchemlib-extended@^1.14.0:
+openchemlib-extended@^1.14.2:
   version "1.14.2"
   resolved "https://registry.yarnpkg.com/openchemlib-extended/-/openchemlib-extended-1.14.2.tgz#5c1cd51beb185a8802c142421f5b69de3bb02c6e"
   dependencies:

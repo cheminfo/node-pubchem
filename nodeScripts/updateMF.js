@@ -38,15 +38,20 @@ co(function*() {
             toSet.unsat= chemcalcMF.unsaturation;
             toSet.charge= chemcalcMF.charge;
             toSet.atom= mfUtil.getAtoms(chemcalcMF);
+            yield collection.findOneAndUpdate({
+                _id: doc._id
+            }, {
+                $set: toSet
+            });
         } catch (e) {
-            console.log(e,mf);
+            yield collection.findOneAndUpdate({
+                _id: doc._id
+            }, {
+                $unset: {em:'', mw:'', unsat:'', charge:'', atom:''}
+            });
         }
 
-        yield collection.findOneAndUpdate({
-            _id: doc._id
-        }, {
-            $set: toSet
-        });
+
         done++;
     }
 }).catch(function (e) {
