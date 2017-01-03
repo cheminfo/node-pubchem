@@ -18,7 +18,7 @@
   "homepage": "https://github.com/cheminfo/node-pubchem#readme",
   "dependencies": {
     "bluebird": "^3.4.0",
-    "chemcalc": "^3.0.6",
+    "chemcalc": "^3.2.0",
     "co": "^4.6.0",
     "kcors": "^1.2.1",
     "koa": "^1.2.0",
