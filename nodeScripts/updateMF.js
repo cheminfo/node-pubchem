@@ -21,7 +21,7 @@ co(function*() {
     const cursor = collection.find();
     while (yield cursor.hasNext()) {
         if (done % 100000 === 0) {
-            console.log(done);
+            console.log(new Date(), done);
         }
         const doc = yield cursor.next();
         const mol = OCLE.Molecule.fromIDCode(doc.ocl.id);
