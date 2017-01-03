@@ -18,8 +18,8 @@ balanced-match@^0.4.1:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
 
 bluebird@^3.4.0:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.6.tgz#01da8d821d87813d158967e743d5fe6c62cf8c0f"
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
 
 brace-expansion@^1.0.0:
   version "1.1.6"
@@ -28,17 +28,17 @@ brace-expansion@^1.0.0:
     balanced-match "^0.4.1"
     concat-map "0.0.1"
 
-bson@~1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.1.tgz#3a5addb0f2ff88bc3436e708e4bdb8637602d72d"
+bson@~1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.3.tgz#a3b66f724b1673067efc32249e1151205d3ba854"
 
 buffer-shims@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
 
 chemcalc@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.0.6.tgz#9179d0efd9d3e1318b4647576247b32ea9850b5c"
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.1.0.tgz#465c97e7a15bfc2cfb733c157a58037d825c9b72"
 
 co@^4.0.2, co@^4.4.0, co@^4.6.0:
   version "4.6.0"
@@ -79,8 +79,8 @@ core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
 debug@*, debug@^2.2.0:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.5.1.tgz#9107bb4a506052ec2a02314bc606313ed2b921c1"
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.0.tgz#bc596bcabe7617f11d9fa15361eded5608b8499b"
   dependencies:
     ms "0.7.2"
 
@@ -269,23 +269,41 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-ml-stat@^1.3.3:
+ml-array-utils@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ml-array-utils/-/ml-array-utils-0.3.0.tgz#c0cc5afdc1cb051f5a83b1ce71641c243672f649"
+  dependencies:
+    ml-stat "^1.0.1"
+
+ml-floyd-warshall@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ml-floyd-warshall/-/ml-floyd-warshall-1.0.0.tgz#0dae7354687cfd8f83e8555167fc30a5ba227009"
+  dependencies:
+    ml-matrix "^2.0.0"
+
+ml-matrix@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ml-matrix/-/ml-matrix-2.2.0.tgz#a281681f9e6ee89bbec57e2266441d67f6660d79"
+  dependencies:
+    ml-array-utils "^0.3.0"
+
+ml-stat@^1.0.1, ml-stat@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/ml-stat/-/ml-stat-1.3.3.tgz#8a5493b0f67382fbf705c260e070436655a7dcfa"
 
-mongodb-core@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.2.tgz#a11db773d34819cbeb97751241827137ab535aab"
+mongodb-core@2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.4.tgz#97f84cb126606c72585e66066ea3a05e9c20dc9b"
   dependencies:
-    bson "~1.0.1"
+    bson "~1.0.3"
     require_optional "~1.0.0"
 
 mongodb@^2.1.21:
-  version "2.2.16"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.16.tgz#e32ba91cf9e29f371fb38ba0c4a71c3b1f5fae77"
+  version "2.2.18"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.18.tgz#23ff09814d39da8ef12f48e737e0f1bfd41a9a50"
   dependencies:
     es6-promise "3.2.1"
-    mongodb-core "2.1.2"
+    mongodb-core "2.1.4"
     readable-stream "2.1.5"
 
 ms@0.7.2:
@@ -312,11 +330,27 @@ only@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
 
-openchemlib@^4.3.0:
+openchemlib-extended@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/openchemlib-extended/-/openchemlib-extended-1.14.0.tgz#3a281dd948eaac87d41842f12948cc02aaee7910"
+  dependencies:
+    ml-floyd-warshall "^1.0.0"
+    ml-matrix "^2.0.0"
+    openchemlib "^4.6.2"
+    papaparse "^4.1.2"
+    rxn-parser "0.0.2"
+    sdf-parser "^1.0.0"
+    setimmediate "^1.0.2"
+
+openchemlib@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/openchemlib/-/openchemlib-4.6.2.tgz#02db6bd6af6fd3f20a260f5b912656d763d80056"
   dependencies:
     rimraf "^2.5.4"
+
+papaparse@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-4.1.2.tgz#04de70e254b45f92c3d364bc78c1c7e76abc812b"
 
 parseurl@^1.3.0:
   version "1.3.1"
@@ -365,6 +399,14 @@ rimraf@^2.5.4:
   dependencies:
     glob "^7.0.5"
 
+rxn-parser@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/rxn-parser/-/rxn-parser-0.0.2.tgz#26424671a125a20cd3cd3f14c76d9469a97740fd"
+
+sdf-parser@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/sdf-parser/-/sdf-parser-1.0.0.tgz#bd8b0128f599e95247054b06419835783f52295c"
+
 sdf-parser@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/sdf-parser/-/sdf-parser-2.2.0.tgz#afc68b392c876fd7e7e0b3bb4556ebc0faa8a2b4"
@@ -372,6 +414,10 @@ sdf-parser@^2.2.0:
 semver@^5.1.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+setimmediate@^1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
 
 setprototypeof@1.0.2:
   version "1.0.2"

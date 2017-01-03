@@ -2,7 +2,7 @@
 
 const OCLE = require('openchemlib-extended');
 const chemcalc = require('chemcalc');
-const mf = require('mf');
+const mfUtil = require('mf');
 
 const fragmentContainer = new Array(1024);
 
@@ -25,7 +25,8 @@ exports.getMolecule = function (molecule) {
         em: chemcalcMF.em,
         mw: chemcalcMF.mw,
         unsat: chemcalcMF.unsaturation,
-        atom: mf.getAtoms(chemcalcMF),
+        charge: chemcalcMF.charge,
+        atom: mfUtil.getAtoms(chemcalcMF),
         nbFragments: fragments
     };
     return result;

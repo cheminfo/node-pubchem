@@ -6,7 +6,7 @@ process.on('unhandledRejection', function (e) {
 
 const bluebird = require('bluebird');
 const co = require('co');
-const OCL = require('openchemlib');
+const OCL = require('openchemlib-extended');
 
 const mongo = require('../src/node_modules/mongo');
 const fragmentContainer = new Array(1024);
