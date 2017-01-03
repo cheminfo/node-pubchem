@@ -25,7 +25,7 @@ co(function*() {
         }
         const doc = yield cursor.next();
         const mol = OCLE.Molecule.fromIDCode(doc.ocl.id);
-        const mf=mol.getMF().parts.join('.');
+        const mf = mol.getMF().parts.join('.');
         const chemcalcMF = chemcalc.analyseMF(mf);
 
         yield collection.findOneAndUpdate({

@@ -2,7 +2,7 @@
 
 const CC = require('chemcalc');
 const fs = require('fs');
-const OCL = require('openchemlib');
+const OCL = require('openchemlib-extended');
 const parse = require('sdf-parser');
 const path = require('path');
 
