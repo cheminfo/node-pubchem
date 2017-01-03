@@ -10,9 +10,7 @@ exports.getMolecule = function (molecule) {
     const oclMol = OCLE.Molecule.fromMolfile(molecule.molfile);
     const oclID = oclMol.getIDCodeAndCoordinates();
     const fragments = oclMol.getFragmentNumbers(fragmentContainer);
-    
     const mf=oclMol.getMF().parts.join('.');
-    const chemcalcMF = chemcalc.analyseMF(mf);
     const result = {
         _id: +molecule.PUBCHEM_COMPOUND_CID,
         seq: 0,
@@ -22,12 +20,20 @@ exports.getMolecule = function (molecule) {
         },
         iupac: molecule.PUBCHEM_IUPAC_NAME,
         mf: mf,
-        em: chemcalcMF.em,
-        mw: chemcalcMF.mw,
-        unsat: chemcalcMF.unsaturation,
-        charge: chemcalcMF.charge,
-        atom: mfUtil.getAtoms(chemcalcMF),
         nbFragments: fragments
     };
+
+    try {
+        const chemcalcMF = chemcalc.analyseMF(mf);
+        result.em = chemcalcMF.em;
+        result.mw= chemcalcMF.mw;
+        result.unsat= chemcalcMF.unsaturation;
+        result.charge= chemcalcMF.charge;
+        result.atom= mfUtil.getAtoms(chemcalcMF);
+    } catch (e) {
+        console.log(e);
+    }
+
+
     return result;
 };

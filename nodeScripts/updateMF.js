@@ -26,19 +26,26 @@ co(function*() {
         const doc = yield cursor.next();
         const mol = OCLE.Molecule.fromIDCode(doc.ocl.id);
         const mf = mol.getMF().parts.join('.');
-        const chemcalcMF = chemcalc.analyseMF(mf);
+
+        const toSet = {
+            mf: mf
+        };
+
+        try {
+            const chemcalcMF = chemcalc.analyseMF(mf);
+            toSet.em = chemcalcMF.em;
+            toSet.mw= chemcalcMF.mw;
+            toSet.unsat= chemcalcMF.unsaturation;
+            toSet.charge= chemcalcMF.charge;
+            toSet.atom= mfUtil.getAtoms(chemcalcMF);
+        } catch (e) {
+            console.log(e);
+        }
 
         yield collection.findOneAndUpdate({
             _id: doc._id
         }, {
-            $set: {
-                mf: mf,
-                em: chemcalcMF.em,
-                mw: chemcalcMF.mw,
-                unsat: chemcalcMF.unsaturation,
-                charge: chemcalcMF.charge,
-                atom: mfUtil.getAtoms(chemcalcMF)
-            }
+            $set: toSet
         });
         done++;
     }
