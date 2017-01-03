@@ -44,6 +44,7 @@ co(function*() {
                 $set: toSet
             });
         } catch (e) {
+            console.log('Remove fields for',doc._id);
             yield collection.findOneAndUpdate({
                 _id: doc._id
             }, {
