@@ -36,6 +36,7 @@ co(function*() {
                 em: chemcalcMF.em,
                 mw: chemcalcMF.mw,
                 unsat: chemcalcMF.unsaturation,
+                charge: chemcalcMF.charge,
                 atom: mfUtil.getAtoms(chemcalcMF)
             }
         });
