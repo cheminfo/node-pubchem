@@ -8,7 +8,7 @@ const bluebird = require('bluebird');
 const co = require('co');
 const OCLE = require('openchemlib-extended');
 const chemcalc = require('chemcalc');
-const mf = require('mf');
+const mfUtil = require('../src/node_modules/mf');
 
 const mongo = require('../src/node_modules/mongo');
 
@@ -25,7 +25,7 @@ co(function*() {
         }
         const doc = yield cursor.next();
         const mol = OCLE.Molecule.fromIDCode(doc.ocl.id);
-        const mf=oclMol.getMF().parts.join('.');
+        const mf=mol.getMF().parts.join('.');
         const chemcalcMF = chemcalc.analyseMF(mf);
 
         yield collection.findOneAndUpdate({
@@ -36,7 +36,7 @@ co(function*() {
                 em: chemcalcMF.em,
                 mw: chemcalcMF.mw,
                 unsat: chemcalcMF.unsaturation,
-                atom: mf.getAtoms(chemcalcMF)
+                atom: mfUtil.getAtoms(chemcalcMF)
             }
         });
         done++;
