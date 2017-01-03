@@ -31,7 +31,7 @@ exports.getMolecule = function (molecule) {
         result.charge= chemcalcMF.charge;
         result.atom= mfUtil.getAtoms(chemcalcMF);
     } catch (e) {
-        console.log(e);
+        console.log(e,mf);
     }
 
 

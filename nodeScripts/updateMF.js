@@ -39,7 +39,7 @@ co(function*() {
             toSet.charge= chemcalcMF.charge;
             toSet.atom= mfUtil.getAtoms(chemcalcMF);
         } catch (e) {
-            console.log(e);
+            console.log(e,mf);
         }
 
         yield collection.findOneAndUpdate({
