@@ -24,7 +24,7 @@ co(function*() {
             console.log(new Date(), done);
         }
         const doc = yield cursor.next();
-        const mol = OCLE.Molecule.fromIDCode(doc.ocl.id);
+        const mol = OCLE.Molecule.fromIDCode(doc.ocl.id, doc.ocl.coord);
         const mf = mol.getMF().parts.join('.');
 
         const toSet = {

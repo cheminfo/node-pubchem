@@ -36,9 +36,9 @@ buffer-shims@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
 
-chemcalc@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.2.0.tgz#71b1b6ae6bee4517e3fe6cd38530067dbf572dc2"
+chemcalc@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/chemcalc/-/chemcalc-3.3.1.tgz#abccad84e11c5e9aec4342e1f0287717a4b8d985"
 
 co@^4.0.2, co@^4.4.0, co@^4.6.0:
   version "4.6.0"
@@ -299,8 +299,8 @@ mongodb-core@2.1.4:
     require_optional "~1.0.0"
 
 mongodb@^2.1.21:
-  version "2.2.18"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.18.tgz#23ff09814d39da8ef12f48e737e0f1bfd41a9a50"
+  version "2.2.19"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.19.tgz#9d84745f9369ff301df5a1790cf485375f1df7d7"
   dependencies:
     es6-promise "3.2.1"
     mongodb-core "2.1.4"

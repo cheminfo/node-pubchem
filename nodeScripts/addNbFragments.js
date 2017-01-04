@@ -24,7 +24,7 @@ co(function*() {
         }
         const doc = yield cursor.next();
         if (!('nbFragments' in doc)) {
-            const mol = OCL.Molecule.fromIDCode(doc.ocl.id);
+            const mol = OCL.Molecule.fromIDCode(doc.ocl.id, doc.ocl.coord);
             const nbFragments = mol.getFragmentNumbers(fragmentContainer, false);
             yield collection.findOneAndUpdate({
                 _id: doc._id
