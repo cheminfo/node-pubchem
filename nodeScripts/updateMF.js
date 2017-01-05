@@ -18,7 +18,7 @@ co(function*() {
     db = yield mongo.connect();
     console.log('connected to MongoDB');
     const collection = db.collection('data');
-    const cursor = collection.find().skip(done);
+    const cursor = collection.find().addCursorFlag('noCursorTimeout',true).skip(done);
     while (yield cursor.hasNext()) {
         if (done % 100000 === 0) {
             console.log(new Date(), done);
