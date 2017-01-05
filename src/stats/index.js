@@ -26,7 +26,6 @@ co(function*() {
 
     const aggregateMf = db.collection('aggregateMf');
     const cursor = aggregateMf.find();
-
     const formulas = [];
     while (yield cursor.hasNext()) {
         const nextValue = yield cursor.next();
@@ -37,6 +36,10 @@ co(function*() {
     formulas.sort((a, b) => a.em - b.em);
     functions.addRatios(formulas);
 
+    const info={
+        date: new Date(),
+        totalFormulas: formulas.length
+    };
     var bins = [];
     var start = 0;
     var end = 0;
@@ -66,9 +69,9 @@ co(function*() {
     const statsCollection = db.collection('mfStats');
     let statsEntry = {
         _id: id,
-        date: new Date(),
         options: result.options,
-        stats: result.results
+        allStats: result.results,
+        info: info
     };
     yield statsCollection.replaceOne({_id: statsEntry._id}, statsEntry, {upsert: true});
     console.log(`Statistics saved as ${id} in collection mfStats`);
