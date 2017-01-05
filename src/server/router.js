@@ -29,6 +29,12 @@ router.get('/molecules/mf', function*() {
     };
 });
 
+router.get('/mfStats/search', function*() {
+    this.body = {
+        result: yield api.mfStats.search(this.query)
+    };
+});
+
 function error(ctx, message) {
     ctx.status = 400;
     ctx.body = {
