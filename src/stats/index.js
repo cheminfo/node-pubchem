@@ -64,21 +64,13 @@ co(function*() {
     // we will save the result in the collection 'stats'
     var id = result.options.stepMass + "_" + result.options.elementRatios.join('.').replace(/\//g,'-');
     const statsCollection = db.collection('mfStats');
-    let statsEntry = yield statsCollection.find({_id: id}).next();
-    if (statsEntry === null) {
-        statsEntry = {
-            _id: id,
-            date: new Date(),
-            options: result.options,
-            stats: result.results
-        };
-        yield statsCollection.insertOne(statsEntry);
-    } else {
-        statsEntry.date = new Date();
-        statsEntry.options = result.options;
-        statsEntry.stats = result.results;
-        yield statsCollection.replaceOne({_id: statsEntry._id}, statsEntry);
-    }
+    let statsEntry = {
+        _id: id,
+        date: new Date(),
+        options: result.options,
+        stats: result.results
+    };
+    yield statsCollection.replaceOne({_id: statsEntry._id}, statsEntry, {upsert: true});
     console.log(`Statistics saved as ${id} in collection mfStats`);
 
    // console.log(JSON.stringify(result, null, 2));
