@@ -13,12 +13,12 @@ const mfUtil = require('../src/node_modules/mf');
 const mongo = require('../src/node_modules/mongo');
 
 let db;
-let done = 0;
+let done = 0; // we may change this value and some records will be skipped
 co(function*() {
     db = yield mongo.connect();
     console.log('connected to MongoDB');
     const collection = db.collection('data');
-    const cursor = collection.find();
+    const cursor = collection.find().skip(done);
     while (yield cursor.hasNext()) {
         if (done % 100000 === 0) {
             console.log(new Date(), done);
@@ -57,6 +57,7 @@ co(function*() {
     }
 }).catch(function (e) {
     console.log('error');
+    console.log(e);
     console.error(e);
 }).then(function () {
     console.log('closing DB');
