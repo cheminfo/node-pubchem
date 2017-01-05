@@ -35,6 +35,12 @@ router.get('/mfStats/search', function*() {
     };
 });
 
+router.get('/mfStats/toc', function*() {
+    this.body = {
+        result: yield api.mfStats.toc(this.query)
+    };
+});
+
 function error(ctx, message) {
     ctx.status = 400;
     ctx.body = {

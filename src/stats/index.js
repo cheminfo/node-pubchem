@@ -77,7 +77,7 @@ co(function*() {
         statsEntry.date = new Date();
         statsEntry.options = result.options;
         statsEntry.stats = result.results;
-        yield statsCollection.updateOne({_id: statsEntry._id}, statsEntry);
+        yield statsCollection.replaceOne({_id: statsEntry._id}, statsEntry);
     }
     console.log(`Statistics saved as ${id} in collection mfStats`);
 
