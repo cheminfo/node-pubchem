@@ -13,16 +13,15 @@ const mfUtil = require('../src/node_modules/mf');
 const mongo = require('../src/node_modules/mongo');
 
 let db;
-let done = 0; // we may change this value and some records will be skipped
+let done = 0;
+let query = {_id:{$gte:0}};
 co(function*() {
     db = yield mongo.connect();
     console.log('connected to MongoDB');
     const collection = db.collection('data');
-    const cursor = collection.find().addCursorFlag('noCursorTimeout',true).skip(done);
+    const cursor = collection.find().skip(done);
     while (yield cursor.hasNext()) {
-        if (done % 100000 === 0) {
-            console.log(new Date(), done);
-        }
+
         const doc = yield cursor.next();
         const mol = OCLE.Molecule.fromIDCode(doc.ocl.id, doc.ocl.coord);
         const mf = mol.getMF().parts.join('.');
@@ -52,6 +51,9 @@ co(function*() {
             });
         }
 
+        if (done % 100000 === 0) {
+            console.log(new Date(), done,'- Current _id:',doc._id);
+        }
 
         done++;
     }
