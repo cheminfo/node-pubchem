@@ -19,7 +19,7 @@ co(function*() {
     db = yield mongo.connect();
     console.log('connected to MongoDB');
     const collection = db.collection('data');
-    const cursor = collection.find(query).sort({_id:{$gte:_id}});
+    const cursor = collection.find(query).sort({_id:1});
     while (yield cursor.hasNext()) {
 
         const doc = yield cursor.next();
