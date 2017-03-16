@@ -6,10 +6,7 @@ process.on('unhandledRejection', function (e) {
 
 const bluebird = require('bluebird');
 const co = require('co');
-const OCLE = require('openchemlib-extended');
-const chemcalc = require('chemcalc');
-const mfUtil = require('../src/node_modules/mf');
-
+const limit=10;
 const mongo = require('../src/node_modules/mongo');
 
 let db;
@@ -21,25 +18,19 @@ co(function*() {
     const cursor = collection.find({
         charge: 0,
         nbFragments: 1,
-        mf: {$regex:/^C[0-9]*H[0-9]*F?[0-9]*N?[0-9]*O?[0-9]*S?[0-9]*$/},
-        "mf.atom.C": {$lt: 8}
-    }).limit(10000000);
+        mf: {$regex:/^C[0-9]*H[0-9]*F?[0-9]*N?[0-9]*O?[0-9]*S?[0-9]*$/}
+    }).limit(limit);
     while (yield cursor.hasNext()) {
         const doc = yield cursor.next();
         const mf=doc.mf;
-        const total=(doc.atom.C||0)+(doc.atom.F||0)+(doc.atom.N||0)+(doc.atom.O||0)+(doc.atom.S||0);
 
         if (done % 1000 === 0) {
             console.log(new Date(), done,'- Current _id:',doc._id);
-            console.log(mf, total);
         }
 
         done++;
 
-        if (total>8) continue;
-        const mol = OCLE.Molecule.fromIDCode(doc.ocl.id, doc.ocl.coord);
-        const smiles=mol.toSmiles();
-        console.log(mf+'\t'+total+'\t'+smiles);
+        console.log(doc);
 
     }
 }).catch(function (e) {
