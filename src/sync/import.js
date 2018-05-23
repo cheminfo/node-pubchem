@@ -12,7 +12,7 @@ const sdfParser = require('sdf-parser');
 const zlib = require('zlib');
 
 const config = require('config');
-const mongo = require('mongo');
+const mongo = require('mongo'); 
 
 const getMolecule = require('./molecule').getMolecule;
 
