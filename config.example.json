@@ -1,4 +1,4 @@
 {
-  "mongodb": "mongodb://localhost:27017/pubchem-test",
+  "mongodb": "mongodb://localhost:27017/pubchem",
   "data": "./data/gz"
 }

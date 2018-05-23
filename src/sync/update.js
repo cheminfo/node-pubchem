@@ -1,103 +1,104 @@
 'use strict';
 
 process.on('unhandledRejection', function (e) {
-    throw e;
+  throw e;
 });
 
-const bluebird = require('bluebird');
-const co = require('co');
-const fs = bluebird.promisifyAll(require('fs'));
+const fs = require('fs').promises;
 const path = require('path');
-const sdfParser = require('sdf-parser');
 const zlib = require('zlib');
 
-const config = require('config');
-const mongo = require('mongo');
+const sdfParser = require('sdf-parser');
 
-const getMolecule = require('./molecule').getMolecule;
+
+const config = require('../util/config');
+const pubChemConnection = new (require('../util/PubChemConnection'))();
+
+const improveMolecule = require('./improveMolecule');
 
 const dataDir = path.join(config.data, 'Weekly');
 const kHalfStringMaxLength = 268435440 / 2;
 
-let db;
-co(function*() {
-    db = yield mongo.connect();
-    console.log('connected to MongoDB');
 
-    const adminCollection = getCollection(db, 'admin');
-    const dataCollection = getCollection(db, 'data');
-
-    let progress = yield adminCollection.find({_id: 'main_progress'}).next();
-    if (!progress || progress.state !== 'update') throw new Error('run import first');
-
-    let lastFile = progress.file || '';
-    const lastDate = progress.date;
-    const weeklyDirs = yield fs.readdirAsync(dataDir);
-
-    for (const week of weeklyDirs) {
-        const weekDate = new Date(week);
-        if (weekDate <= lastDate) continue;
-        console.log(`treating directory ${week}`);
-        const weekDir = path.join(dataDir, week);
-
-        // remove killed compounds
-        if (!lastFile) {
-            let killed;
-            try {
-                const killedFile = yield fs.readFileAsync(path.join(weekDir, 'killed-CIDs'), 'ascii');
-                killed = killedFile.split(/\r\n|\r|\n/).map(Number);
-            } catch (e) {
-                if (e.code !== 'ENOENT') throw e;
-            }
-            if (killed) {
-                console.log(`removing ${killed.length} killed IDs`);
-                for (const killedID of killed) {
-                    yield dataCollection.deleteOne({_id: killedID});
-                }
-            }
-        }
-
-        // insert new or updated compounds
-        const sdfDir = path.join(weekDir, 'SDF');
-        const sdfList = yield fs.readdirAsync(sdfDir);
-        for (const sdfFile of sdfList) {
-            if (!sdfFile.endsWith('.sdf.gz')) continue;
-            if (lastFile && lastFile >= sdfFile) continue;
-            const sdfPath = path.join(sdfDir, sdfFile);
-            console.log(`treating file ${sdfFile}`);
-            const gzValue = yield fs.readFileAsync(sdfPath);
-            const bufferValue = zlib.gunzipSync(gzValue);
-            let n = 0, nextIndex = 0;
-            while (n < bufferValue.length) {
-                nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
-                if (nextIndex === -1) nextIndex = bufferValue.length;
-                const strValue = bufferValue.slice(n, nextIndex).toString();
-                const molecules = sdfParser(strValue).molecules;
-                for (let j = 0; j < molecules.length; j++) {
-                    const molecule = molecules[j];
-                    const result = getMolecule(molecule);
-                    result.seq = ++progress.seq;
-                    yield dataCollection.updateOne({_id: result._id}, result, {upsert: true});
-                    yield adminCollection.updateOne({_id: progress._id}, progress);
-                }
-                n = nextIndex;
-            }
-            progress.file = sdfFile;
-            yield adminCollection.updateOne({_id: progress._id}, progress);
-        }
-
-        progress.date = weekDate;
-        lastFile = progress.file = '';
-        yield adminCollection.updateOne({_id: progress._id}, progress);
-    }
-}).catch(function (e) {
-    console.log('error');
-    console.error(e);
+update().catch(function (e) {
+  console.log('error');
+  console.error(e);
 }).then(function () {
-    console.log('closing DB');
-    if (db) db.close();
+  console.log('closing DB');
+  if (pubChemConnection) pubChemConnection.close();
 });
 
-function getCollection(db, name) {
-    return db.collection(name);
+async function update() {
+  var db = await pubChemConnection.getDatabase();
+  console.log('connected to MongoDB');
+
+  const adminCollection = db.collection('admin');
+  const dataCollection = db.collection('data');
+
+  let progress = await adminCollection.find({ _id: 'main_progress' }).next();
+  if (!progress || progress.state !== 'update') {
+    throw new Error('run import first');
+  }
+
+  let lastFile = progress.file || '';
+  const lastDate = progress.date;
+  const weeklyDirs = await fs.readdir(dataDir);
+
+  for (const week of weeklyDirs) {
+    const weekDate = new Date(week);
+    if (weekDate <= lastDate) continue;
+    console.log(`treating directory ${week}`);
+    const weekDir = path.join(dataDir, week);
+
+    // remove killed compounds
+    if (!lastFile) {
+      let killed;
+      try {
+        const killedFile = await fs.readFile(path.join(weekDir, 'killed-CIDs'), 'ascii');
+        killed = killedFile.split(/\r\n|\r|\n/).map(Number);
+      } catch (e) {
+        if (e.code !== 'ENOENT') throw e;
+      }
+      if (killed) {
+        console.log(`removing ${killed.length} killed IDs`);
+        for (const killedID of killed) {
+          await dataCollection.deleteOne({ _id: killedID });
+        }
+      }
+    }
+
+    // insert new or updated compounds
+    const sdfDir = path.join(weekDir, 'SDF');
+    const sdfList = await fs.readdir(sdfDir);
+    for (const sdfFile of sdfList) {
+      if (!sdfFile.endsWith('.sdf.gz')) continue;
+      if (lastFile && lastFile >= sdfFile) continue;
+      const sdfPath = path.join(sdfDir, sdfFile);
+      console.log(`treating file ${sdfFile}`);
+      const gzValue = await fs.readFile(sdfPath);
+      const bufferValue = zlib.gunzipSync(gzValue);
+      let n = 0;
+      let nextIndex = 0;
+      while (n < bufferValue.length) {
+        nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
+        if (nextIndex === -1) nextIndex = bufferValue.length;
+        const strValue = bufferValue.slice(n, nextIndex).toString();
+        const molecules = sdfParser(strValue).molecules;
+        for (let j = 0; j < molecules.length; j++) {
+          const molecule = molecules[j];
+          const result = improveMolecule(molecule);
+          result.seq = ++progress.seq;
+          await dataCollection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
+          await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
+        }
+        n = nextIndex;
+      }
+      progress.file = sdfFile;
+      await adminCollection.updateOne({ _id: progress._id }, progress);
+    }
+
+    progress.date = weekDate;
+    lastFile = progress.file = '';
+    await adminCollection.updateOne({ _id: progress._id }, progress);
+  }
 }
