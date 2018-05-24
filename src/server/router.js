@@ -1,9 +1,9 @@
 'use strict';
 
-const api = require('api');
 const router = require('koa-router')();
 
-router.get('/search/em', function*() {
+/*
+router.get('/search/em', () => {
   const value = +this.query.value;
   if (!value) {
     return error(this, 'missing value');
@@ -12,34 +12,51 @@ router.get('/search/em', function*() {
   if (this.query.limit) options.limit = +this.query.limit;
   if (this.query.precision) options.precision = +this.query.precision;
   this.body = {
-    result: yield api.search.em(value, options)
+    result: await api.search.em(value, options)
+  };
+});
+*/
+
+
+router.get('/mfs/em', async (ctx) => {
+  const search = require('../search/mfsFromEm');
+  const result = await search(ctx.request.query.em, ctx.request.query);
+  ctx.body = {
+    result
   };
 });
 
-router.get('/molecules/em', function*() {
+router.get('/molecules/em', async (ctx) => {
+  const search = require('../search/moleculesFromEm');
+  const result = await search(ctx.request.query.em, ctx.request.query);
+  ctx.body = {
+    result
+  };
+});
+
+router.get('/molecules/mf', async (ctx) => {
+  const search = require('../search/moleculesFromMf');
+  const result = await search(ctx.request.query.mf, ctx.request.query);
+  ctx.body = {
+    result
+  };
+});
+
+/*
+router.get('/mfStats/search', async () => {
   this.body = {
-    result: yield api.molecules.em(this.query)
+    result: await api.mfStats.search(this.query)
   };
 });
+*/
 
-router.get('/molecules/mf', function*() {
+/*
+router.get('/mfStats/toc', () => {
   this.body = {
-    result: yield api.molecules.mf(this.query)
+    result: await api.mfStats.toc(this.query)
   };
 });
-
-router.get('/mfStats/search', function*() {
-  this.body = {
-    result: yield api.mfStats.search(this.query)
-  };
-});
-
-router.get('/mfStats/toc', function*() {
-  this.body = {
-    result: yield api.mfStats.toc(this.query)
-  };
-});
-
+*/
 function error(ctx, message) {
   ctx.status = 400;
   ctx.body = {

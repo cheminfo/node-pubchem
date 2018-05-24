@@ -39,6 +39,8 @@ async function firstImport() {
       date: new Date()
     };
     await adminCollection.insertOne(progress);
+    dataCollection.createIndex({ em: 1 });
+    dataCollection.createIndex({ mf: 1 });
   }
 
   const lastDocument = await dataCollection.find({ seq: { $lte: progress.seq } }).sort('_id', -1).limit(1).next();

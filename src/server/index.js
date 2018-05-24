@@ -1,6 +1,6 @@
 'use strict';
 
-const koa = require('koa');
+const Koa = require('koa');
 const kcors = require('kcors');
 
 const router = require('./router');
@@ -10,7 +10,7 @@ if (hasPort === -1) throw new Error('missing port option');
 const PORT = parseInt(process.argv[hasPort + 1]);
 if (!PORT) throw new Error(`wrong port option: ${process.argv[hasPort + 1]}`);
 
-const app = koa();
+const app = new Koa();
 
 app.use(kcors());
 app.use(router.routes());
