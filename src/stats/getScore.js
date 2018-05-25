@@ -1,8 +1,5 @@
 'use strict';
 
-process.on('unhandledRejection', function (e) {
-  throw e;
-});
 
 const CC = require('chemcalc');
 const functions = require('mf');

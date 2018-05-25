@@ -29,11 +29,8 @@ update().catch(function (e) {
 });
 
 async function update() {
-  var db = await pubChemConnection.getDatabase();
-  console.log('connected to MongoDB');
-
-  const adminCollection = db.collection('admin');
-  const dataCollection = db.collection('data');
+  const adminCollection = await pubChemConnection.getAdminCollection();
+  const collection = await pubChemConnection.getMoleculesCollection();
 
   let progress = await adminCollection.find({ _id: 'main_progress' }).next();
   if (!progress || progress.state !== 'update') {
@@ -47,7 +44,7 @@ async function update() {
   for (const week of weeklyDirs) {
     const weekDate = new Date(week);
     if (weekDate <= lastDate) continue;
-    console.log(`treating directory ${week}`);
+    console.log(`processing directory ${week}`);
     const weekDir = path.join(dataDir, week);
 
     // remove killed compounds
@@ -62,7 +59,7 @@ async function update() {
       if (killed) {
         console.log(`removing ${killed.length} killed IDs`);
         for (const killedID of killed) {
-          await dataCollection.deleteOne({ _id: killedID });
+          await collection.deleteOne({ _id: killedID });
         }
       }
     }
@@ -74,7 +71,7 @@ async function update() {
       if (!sdfFile.endsWith('.sdf.gz')) continue;
       if (lastFile && lastFile >= sdfFile) continue;
       const sdfPath = path.join(sdfDir, sdfFile);
-      console.log(`treating file ${sdfFile}`);
+      console.log(`processing file ${sdfFile}`);
       const gzValue = await fs.readFile(sdfPath);
       const bufferValue = zlib.gunzipSync(gzValue);
       let n = 0;
@@ -88,7 +85,7 @@ async function update() {
           const molecule = molecules[j];
           const result = improveMolecule(molecule);
           result.seq = ++progress.seq;
-          await dataCollection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
+          await collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
           await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
         }
         n = nextIndex;

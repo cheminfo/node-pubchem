@@ -1,7 +1,7 @@
 'use strict';
 
 
-const fs = require('fs/promises');
+const fs = require('fs').promises;
 const path = require('path');
 const zlib = require('zlib');
 
@@ -24,11 +24,8 @@ firstImport().catch(function (e) {
 });
 
 async function firstImport() {
-  let db = await pubChemConnection.getDatabase();
-  console.log('connected to MongoDB');
-
-  const adminCollection = db.collection('admin');
-  const dataCollection = db.collection('data');
+  const adminCollection = await pubChemConnection.getAdminCollection();
+  const collection = await pubChemConnection.getMoleculesCollection();
 
   let progress = await adminCollection.find({ _id: 'main_progress' }).next();
   if (progress === null) {
@@ -39,11 +36,11 @@ async function firstImport() {
       date: new Date()
     };
     await adminCollection.insertOne(progress);
-    dataCollection.createIndex({ em: 1 });
-    dataCollection.createIndex({ mf: 1 });
+    collection.createIndex({ em: 1 });
+    collection.createIndex({ mf: 1 });
   }
 
-  const lastDocument = await dataCollection.find({ seq: { $lte: progress.seq } }).sort('_id', -1).limit(1).next();
+  const lastDocument = await collection.find({ seq: { $lte: progress.seq } }).sort('_id', -1).limit(1).next();
   let firstID = lastDocument ? lastDocument._id : 0;
 
   const dataFiles = await fs.readdir(dataDir);
@@ -58,7 +55,7 @@ async function firstImport() {
   console.log(`starting with file ${firstName}`);
   for (let i = firstIndex; i < dataFiles.length; i++) {
     if (!dataFiles[i].endsWith('.sdf.gz')) continue;
-    console.log(`treating file ${dataFiles[i]}`);
+    console.log(`processing file ${dataFiles[i]}`);
     const gzValue = await fs.readFile(path.join(dataDir, dataFiles[i]));
     const bufferValue = zlib.gunzipSync(gzValue);
     let n = 0;
@@ -73,7 +70,7 @@ async function firstImport() {
         if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
         const result = improveMolecule(molecule);
         result.seq = ++progress.seq;
-        await dataCollection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
+        await collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
         await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
       }
       n = nextIndex;

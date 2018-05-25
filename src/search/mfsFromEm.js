@@ -20,7 +20,7 @@ module.exports = async function mfsFromEm(em, options = {}) {
 
   error = 5;
 
-  const collection = await pubChemConnection.getDataCollection();
+  const collection = await pubChemConnection.getMoleculesCollection();
 
 
   return collection.aggregate(
@@ -43,5 +43,3 @@ module.exports = async function mfsFromEm(em, options = {}) {
     ]
   ).toArray();
 };
-
-//        ppm: Math.abs(resultValue.em - value) / value * 1e6,

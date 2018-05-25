@@ -4,7 +4,7 @@
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
 module.exports = async function moleculesFromEm(em, options = {}) {
-  const collection = await pubChemConnection.getDataCollection();
+  const collection = await pubChemConnection.getMoleculesCollection();
   if (!em) {
     throw new Error('em parameter must be specified');
   }

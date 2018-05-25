@@ -1,41 +1,42 @@
 'use strict';
 
-process.on('unhandledRejection', function (e) {
-  throw e;
-});
-
-const bluebird = require('bluebird');
-const co = require('co');
-
-const fs = bluebird.promisifyAll(require('fs'));
-
 const mlStat = require('ml-stat/array');
-const mongo = require('mongo');
-const functions = require('mf');
-const rules = require('rules');
 
-const minMass = rules.minMass;
-const maxMass = rules.maxMass;
-const stepMass = rules.stepMass;
-const elementRatios = rules.elementRatios;
+const pubChemConnection = new (require('../util/PubChemConnection'))();
+
+generateStats()
+  .catch((e) => console.log(e))
+  .then((result) => {
+    console.log('Done');
+    pubChemConnection.close();
+  });
+
+const mfFunctions = require('../util//mf');
+const rules = require('../util/rules');
+
+const {
+  minMass,
+  maxMass,
+  stepMass,
+  elementRatios
+} = rules;
 const distributionLength = (rules.ratioMaxValue - rules.ratioMinValue) / rules.ratioSlotWidth;
 
-let db;
-co(function*() {
-  db = yield mongo.connect();
-  console.error('connected to MongoDB');
 
-  const aggregateMf = db.collection('aggregateMf');
-  const cursor = aggregateMf.find();
+async function generateStats() {
+  const mfsCollection = await pubChemConnection.getMfsCollection();
+
+
+  const cursor = mfsCollection.find();
   const formulas = [];
-  while (yield cursor.hasNext()) {
-    const nextValue = yield cursor.next();
-    if (functions.isFormulaAllowed(nextValue, minMass, maxMass)) {
+  while (await cursor.hasNext()) {
+    const nextValue = await cursor.next();
+    if (mfFunctions.isFormulaAllowed(nextValue, minMass, maxMass)) {
       formulas.push(nextValue);
     }
   }
   formulas.sort((a, b) => a.em - b.em);
-  functions.addRatios(formulas);
+  mfFunctions.addRatios(formulas);
 
   const info = {
     date: new Date(),
@@ -67,24 +68,18 @@ co(function*() {
 
     // we will save the result in the collection 'stats'
   var id = `${result.options.stepMass}_${result.options.elementRatios.join('.').replace(/\//g, '-')}`;
-  const statsCollection = db.collection('mfStats');
+  const statsCollection = await pubChemConnection.getMfStatsCollection();
   let statsEntry = {
     _id: id,
     options: result.options,
     allStats: result.results,
     info: info
   };
-  yield statsCollection.replaceOne({ _id: statsEntry._id }, statsEntry, { upsert: true });
+  await statsCollection.replaceOne({ _id: statsEntry._id }, statsEntry, { upsert: true });
   console.log(`Statistics saved as ${id} in collection mfStats`);
 
   // console.log(JSON.stringify(result, null, 2));
-}).catch(function (e) {
-  console.error('error');
-  console.error(e);
-}).then(function () {
-  console.error('closing DB');
-  if (db) db.close();
-});
+}
 
 function getStats(mfs) {
   var stats = [];

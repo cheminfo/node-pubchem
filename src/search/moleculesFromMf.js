@@ -4,7 +4,7 @@
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
 module.exports = async function moleculesFromMf(mf, options = {}) {
-  const collection = await pubChemConnection.getDataCollection();
+  const collection = await pubChemConnection.getMoleculesCollection();
   if (!mf) {
     throw new Error('mf parameter must be specified');
   }
