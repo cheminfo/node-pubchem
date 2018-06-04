@@ -8,7 +8,7 @@ const bluebird = require('bluebird');
 const co = require('co');
 const CC = require('chemcalc');
 
-const fs = bluebird.promisifyAll(require('fs'));
+const fs = bluebird.promisifyAll(require('fs-extra'));
 
 const mongo = require('mongo');
 const functions = require('mf');

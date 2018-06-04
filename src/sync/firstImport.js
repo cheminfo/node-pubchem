@@ -1,10 +1,10 @@
 'use strict';
 
 
-const fs = require('fs').promises;
 const path = require('path');
 const zlib = require('zlib');
 
+const fs = require('fs-extra');
 const sdfParser = require('sdf-parser');
 
 const config = require('../util/config');

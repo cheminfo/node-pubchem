@@ -4,7 +4,7 @@ process.on('unhandledRejection', function (e) {
   throw e;
 });
 
-const fs = require('fs').promises;
+const fs = require('fs-extra').promises;
 const path = require('path');
 const zlib = require('zlib');
 

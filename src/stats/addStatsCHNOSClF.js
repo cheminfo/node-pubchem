@@ -4,8 +4,7 @@ process.on('unhandledRejection', function (e) {
   throw e;
 });
 
-const fs = require('fs');
-
+const fs = require('fs-extra');
 const bluebird = require('bluebird');
 const co = require('co');
 const mongo = require('mongo');
