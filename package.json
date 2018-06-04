@@ -24,6 +24,7 @@
   "homepage": "https://github.com/cheminfo/node-pubchem#readme",
   "dependencies": {
     "chemcalc": "^3.3.1",
+    "fs-extra": "^6.0.1",
     "kcors": "^1.2.1",
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",
