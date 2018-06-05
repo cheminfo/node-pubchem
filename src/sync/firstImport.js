@@ -2,18 +2,19 @@
 
 
 const path = require('path');
-const zlib = require('zlib');
+
 
 const fs = require('fs-extra');
-const sdfParser = require('sdf-parser');
+
 
 const config = require('../util/config');
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
-const improveMoleculePool = require('./improveMoleculePool');
+const importOneFile = require('./importOneFile');
+
 
 const dataDir = path.join(config.data, 'CURRENT-Full/SDF');
-const kHalfStringMaxLength = 268435440 / 2;
+
 
 firstImport().catch(function (e) {
   console.log('error');
@@ -36,8 +37,6 @@ async function firstImport() {
       date: new Date()
     };
     await adminCollection.insertOne(progress);
-    collection.createIndex({ em: 1 });
-    collection.createIndex({ mf: 1 });
   }
 
   const lastDocument = await collection.find({ seq: { $lte: progress.seq } }).sort('_id', -1).limit(1).next();
@@ -55,32 +54,22 @@ async function firstImport() {
   console.log(`starting with file ${firstName}`);
   for (let i = firstIndex; i < dataFiles.length; i++) {
     if (!dataFiles[i].endsWith('.sdf.gz')) continue;
+
+    let start = Date.now();
     console.log(`processing file ${dataFiles[i]}`);
-    const gzValue = await fs.readFile(path.join(dataDir, dataFiles[i]));
-    const bufferValue = zlib.gunzipSync(gzValue);
-    let n = 0;
-    let nextIndex = 0;
-    while (n < bufferValue.length) {
-      nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
-      if (nextIndex === -1) nextIndex = bufferValue.length;
-      const strValue = bufferValue.slice(n, nextIndex).toString();
-      const molecules = sdfParser(strValue).molecules;
-      for (let j = 0; j < molecules.length; j++) {
-        const molecule = molecules[j];
-        if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
-
-        const result = await improveMoleculePool(molecule);
-
-        result.seq = ++progress.seq;
-        await collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
-        await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
-      }
-      n = nextIndex;
-    }
+    let newMolecules = await importOneFile(
+      path.join(dataDir, dataFiles[i]),
+      pubChemConnection,
+      { firstID, progress }
+    );
+    console.log(`Added ${newMolecules} new molecules at a speed of ${Math.floor(newMolecules / (Date.now() - start) * 1000)} compounds per second`);
   }
 
   progress.state = 'update';
   await adminCollection.updateOne({ _id: progress._id }, progress);
+
+  await collection.createIndex({ em: 1 });
+  await collection.createIndex({ mf: 1 });
 }
 
 const elementsPerRange = 25000;

@@ -4,10 +4,10 @@ process.on('unhandledRejection', function (e) {
   throw e;
 });
 
-const fs = require('fs-extra').promises;
 const path = require('path');
 const zlib = require('zlib');
 
+const fs = require('fs-extra').promises;
 const sdfParser = require('sdf-parser');
 
 
@@ -71,27 +71,14 @@ async function update() {
       if (!sdfFile.endsWith('.sdf.gz')) continue;
       if (lastFile && lastFile >= sdfFile) continue;
       const sdfPath = path.join(sdfDir, sdfFile);
+
       console.log(`processing file ${sdfFile}`);
-      const gzValue = await fs.readFile(sdfPath);
-      const bufferValue = zlib.gunzipSync(gzValue);
-      let n = 0;
-      let nextIndex = 0;
-      while (n < bufferValue.length) {
-        nextIndex = bufferValue.indexOf('$$$$', n + kHalfStringMaxLength);
-        if (nextIndex === -1) nextIndex = bufferValue.length;
-        const strValue = bufferValue.slice(n, nextIndex).toString();
-        const molecules = sdfParser(strValue).molecules;
-        for (let j = 0; j < molecules.length; j++) {
-          const molecule = molecules[j];
-          const result = improveMolecule(molecule);
-          result.seq = ++progress.seq;
-          await collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
-          await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
-        }
-        n = nextIndex;
-      }
-      progress.file = sdfFile;
-      await adminCollection.updateOne({ _id: progress._id }, progress);
+      let newMolecules = await importOneFile(
+        sdfPath,
+        pubChemConnection,
+        { firstID, progress }
+      );
+      console.log(`Added ${newMolecules} new molecules`);
     }
 
     progress.date = weekDate;
