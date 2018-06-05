@@ -10,7 +10,7 @@ const sdfParser = require('sdf-parser');
 const config = require('../util/config');
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
-const improveMolecule = require('./improveMolecule');
+const improveMoleculePool = require('./improveMoleculePool');
 
 const dataDir = path.join(config.data, 'CURRENT-Full/SDF');
 const kHalfStringMaxLength = 268435440 / 2;
@@ -68,7 +68,9 @@ async function firstImport() {
       for (let j = 0; j < molecules.length; j++) {
         const molecule = molecules[j];
         if (molecule.PUBCHEM_COMPOUND_CID <= firstID) continue;
-        const result = improveMolecule(molecule);
+
+        const result = await improveMoleculePool(molecule);
+
         result.seq = ++progress.seq;
         await collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
         await adminCollection.updateOne({ _id: progress._id }, { $set: progress });

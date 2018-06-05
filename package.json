@@ -33,7 +33,8 @@
     "ml-stat": "^1.3.3",
     "mongodb": "^3.0.0",
     "openchemlib-extended": "^3.2.0",
-    "sdf-parser": "^3.1.0"
+    "sdf-parser": "^3.1.0",
+    "worker-nodes": "^1.6.0"
   },
   "devDependencies": {
     "cheminfo-tools": "^1.20.2",
