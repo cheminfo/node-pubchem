@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "first-import": "node src/sync/firstImport.js",
-    "update": "node src/sync/update.js",
+    "cron": "node src/sync/cron.js",
     "test": "jest",
     "server": "node src/server/index.js --port 80",
     "server8080": "node src/server/index.js --port 8080",

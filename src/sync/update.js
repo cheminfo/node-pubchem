@@ -17,12 +17,15 @@ const syncUpdates = require('./ftp/syncUpdates');
 
 const dataDir = `${__dirname}/../../${config.dataWeeklyDir}`;
 
-update().catch(function (e) {
-  console.error(e);
-}).then(function () {
-  console.log('closing DB');
-  if (pubChemConnection) pubChemConnection.close();
-});
+module.exports = async function () {
+  return update().catch(function (e) {
+    console.error(e);
+  }).then(function () {
+    console.log('closing DB');
+    if (pubChemConnection) pubChemConnection.close();
+  });
+};
+
 
 async function update() {
   await syncUpdates(config.ftpServer, 'pubchem/Compound/Weekly', config.dataWeeklyDir);

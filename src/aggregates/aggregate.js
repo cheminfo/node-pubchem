@@ -1,6 +1,9 @@
 'use strict';
 
-aggregate();
+module.exports = async function () {
+  return aggregate();
+};
+
 
 async function aggregate() {
   await require('./MFs')();

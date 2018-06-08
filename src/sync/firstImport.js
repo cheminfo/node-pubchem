@@ -13,13 +13,17 @@ const pubChemConnection = new (require('../util/PubChemConnection'))();
 const importOneFile = require('./importOneFile');
 const syncFolder = require('./ftp/syncFolder');
 
-firstImport().catch(function (e) {
-  console.log('error');
-  console.error(e);
-}).then(function () {
-  console.log('closing DB');
-  pubChemConnection.close();
-});
+
+module.exports = async function () {
+  return firstImport().catch(function (e) {
+    console.log('error');
+    console.error(e);
+  }).then(function () {
+    console.log('closing DB');
+    pubChemConnection.close();
+  });
+};
+
 
 async function firstImport() {
   const adminCollection = await pubChemConnection.getAdminCollection();
