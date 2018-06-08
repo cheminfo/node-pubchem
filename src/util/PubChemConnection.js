@@ -37,7 +37,10 @@ PubChemConnection.prototype.getCollection = async function getCollection(collect
 
 PubChemConnection.prototype.init = async function init() {
   if (this.connection) return;
-  this.connection = await MongoClient.connect(config.mongodbUrl, { autoReconnect: true });
+  this.connection = await MongoClient.connect(config.mongodbUrl, {
+    autoReconnect: true,
+    socketTimeoutMS: 60 * 60 * 1000
+  });
 };
 
 module.exports = PubChemConnection;

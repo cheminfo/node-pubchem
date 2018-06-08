@@ -18,7 +18,6 @@ async function commonMFs(pubChemConnection) {
   let result = await collection.aggregate([
   //    { $limit: 1e4 },
     { $match: { nbFragments: 1, charge: 0 } }, // we don't want charges in MF
-    { $project: { mf: 1, em: 1, unsaturation: 1, atom: 1 } },
     { $group:
         {
           _id: '$mf', count: { $sum: 1 },
