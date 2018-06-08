@@ -81,6 +81,8 @@ async function firstImport() {
 
   await collection.createIndex({ em: 1 });
   await collection.createIndex({ mf: 1 });
+  await collection.createIndex({ nbFragments: 1 });
+  await collection.createIndex({ charge: 1 });
 }
 
 const elementsPerRange = 25000;

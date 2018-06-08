@@ -3,17 +3,19 @@
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
 
-aggregateCHNOSClF(pubChemConnection)
-  .catch((e) => console.log(e))
-  .then(() => {
-    console.log('Done');
-    pubChemConnection.close();
-  });
+module.exports = async function () {
+  CHNOSClF(pubChemConnection)
+    .catch((e) => console.log(e))
+    .then(() => {
+      console.log('Done');
+      pubChemConnection.close();
+    });
+};
 
 
-async function aggregateCHNOSClF(pubChemConnection) {
+async function CHNOSClF(pubChemConnection) {
   const collection = await pubChemConnection.getMoleculesCollection();
-  console.log('Need to process', await collection.count(), 'entries');
+  console.log('CHNOSClF: Need to aggregate', await collection.count(), 'entries');
   let result = collection.aggregate([
     { $limit: 1e10 },
     { $match: { nbFragments: 1, mf: { $regex: /^C[0-9]*H[0-9]*Cl?[0-9]*F?[0-9]*N?[0-9]*O?[0-9]*S?[0-9]*$/ }, charge: { $lte: 1, $gte: -1 } } },

@@ -47,7 +47,7 @@ async function update() {
 
     console.log('weekEdir', weekDir);
     // remove killed compounds
-    if (false && !lastFile) {
+    if (!lastFile) {
       let killed;
       try {
         const killedFile = await fs.readFile(path.join(weekDir, 'killed-CIDs'), 'ascii');
@@ -58,7 +58,6 @@ async function update() {
       if (killed) {
         console.log(`removing ${killed.length} killed IDs`);
         for (const killedID of killed) {
-          console.log(killedID);
           await collection.deleteOne({ _id: killedID });
         }
         console.log('removing done');
@@ -83,6 +82,6 @@ async function update() {
 
     progress.date = weekDate;
     lastFile = progress.file = '';
-    await adminCollection.updateOne({ _id: progress._id }, progress);
+    await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
   }
 }

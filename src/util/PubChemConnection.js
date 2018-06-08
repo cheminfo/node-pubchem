@@ -31,6 +31,10 @@ PubChemConnection.prototype.getDatabase = async function getDatabase() {
   return this.connection.db(config.databaseName);
 };
 
+PubChemConnection.prototype.getCollection = async function getCollection(collectionName) {
+  return (await this.getDatabase()).collection(collectionName);
+};
+
 PubChemConnection.prototype.init = async function init() {
   if (this.connection) return;
   this.connection = await MongoClient.connect(config.mongodbUrl, { autoReconnect: true });
