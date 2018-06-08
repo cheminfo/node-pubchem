@@ -5,23 +5,19 @@ process.on('unhandledRejection', function (e) {
 });
 
 const path = require('path');
-const zlib = require('zlib');
 
-const fs = require('fs-extra').promises;
-const sdfParser = require('sdf-parser');
+const fs = require('fs-extra');
 
 
 const config = require('../util/config');
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
-const improveMolecule = require('./improveMolecule');
+const importOneFile = require('./importOneFile');
+const syncUpdates = require('./ftp/syncUpdates');
 
-const dataDir = path.join(config.data, 'Weekly');
-const kHalfStringMaxLength = 268435440 / 2;
-
+const dataDir = `${__dirname}/../../${config.dataWeeklyDir}`;
 
 update().catch(function (e) {
-  console.log('error');
   console.error(e);
 }).then(function () {
   console.log('closing DB');
@@ -29,6 +25,8 @@ update().catch(function (e) {
 });
 
 async function update() {
+  await syncUpdates(config.ftpServer, 'pubchem/Compound/Weekly', config.dataWeeklyDir);
+
   const adminCollection = await pubChemConnection.getAdminCollection();
   const collection = await pubChemConnection.getMoleculesCollection();
 
@@ -47,8 +45,9 @@ async function update() {
     console.log(`processing directory ${week}`);
     const weekDir = path.join(dataDir, week);
 
+    console.log('weekEdir', weekDir);
     // remove killed compounds
-    if (!lastFile) {
+    if (false && !lastFile) {
       let killed;
       try {
         const killedFile = await fs.readFile(path.join(weekDir, 'killed-CIDs'), 'ascii');
@@ -59,24 +58,25 @@ async function update() {
       if (killed) {
         console.log(`removing ${killed.length} killed IDs`);
         for (const killedID of killed) {
+          console.log(killedID);
           await collection.deleteOne({ _id: killedID });
         }
+        console.log('removing done');
       }
     }
 
     // insert new or updated compounds
-    const sdfDir = path.join(weekDir, 'SDF');
-    const sdfList = await fs.readdir(sdfDir);
+    const sdfList = await fs.readdir(weekDir);
     for (const sdfFile of sdfList) {
       if (!sdfFile.endsWith('.sdf.gz')) continue;
       if (lastFile && lastFile >= sdfFile) continue;
-      const sdfPath = path.join(sdfDir, sdfFile);
+      const sdfPath = path.join(weekDir, sdfFile);
 
       console.log(`processing file ${sdfFile}`);
       let newMolecules = await importOneFile(
         sdfPath,
         pubChemConnection,
-        { firstID, progress }
+        { progress }
       );
       console.log(`Added ${newMolecules} new molecules`);
     }

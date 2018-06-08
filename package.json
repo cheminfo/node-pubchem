@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/cheminfo/node-pubchem#readme",
   "dependencies": {
+    "array-difference": "0.0.1",
+    "basic-ftp": "^2.13.0",
     "chemcalc": "^3.3.1",
     "fs-extra": "^6.0.1",
     "kcors": "^1.2.1",
@@ -34,6 +36,7 @@
     "mongodb": "^3.0.0",
     "openchemlib-extended": "^3.2.0",
     "sdf-parser": "^3.1.0",
+    "tempfile": "^2.0.0",
     "worker-nodes": "^1.6.0"
   },
   "devDependencies": {

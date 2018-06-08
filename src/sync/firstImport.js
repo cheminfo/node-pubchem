@@ -11,10 +11,7 @@ const config = require('../util/config');
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
 const importOneFile = require('./importOneFile');
-
-
-const dataDir = path.join(config.data, 'CURRENT-Full/SDF');
-
+const syncFolder = require('./ftp/syncFolder');
 
 firstImport().catch(function (e) {
   console.log('error');
@@ -30,6 +27,7 @@ async function firstImport() {
 
   let progress = await adminCollection.find({ _id: 'main_progress' }).next();
   if (progress === null) {
+    console.log('Starting new database construction.');
     progress = {
       _id: 'main_progress',
       state: 'import',
@@ -37,7 +35,19 @@ async function firstImport() {
       date: new Date()
     };
     await adminCollection.insertOne(progress);
+  } else {
+    if (progress.state === 'update') {
+      console.log('First importation has been completed. Should only update.');
+      return;
+    } else {
+      console.log(`Continuing first importation from ${progress.seq}.`);
+    }
   }
+
+  const dataDir = `${__dirname}/../../${config.dataFullDir}`;
+
+  await syncFolder(config.ftpServer, 'pubchem/Compound/CURRENT-Full/SDF', dataDir);
+
 
   const lastDocument = await collection.find({ seq: { $lte: progress.seq } }).sort('_id', -1).limit(1).next();
   let firstID = lastDocument ? lastDocument._id : 0;
@@ -66,7 +76,8 @@ async function firstImport() {
   }
 
   progress.state = 'update';
-  await adminCollection.updateOne({ _id: progress._id }, progress);
+
+  await adminCollection.updateOne({ _id: progress._id }, { $set: progress });
 
   await collection.createIndex({ em: 1 });
   await collection.createIndex({ mf: 1 });
