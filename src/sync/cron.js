@@ -8,7 +8,7 @@ const aggregate = require('../aggregates/aggregate');
 const firstImport = require('./firstImport');
 const update = require('./update');
 
-let sleepTime = 1000 * 24 * 3600;
+let sleepTime = 1000 * 24 * 3600; // 1 day
 
 cron();
 
