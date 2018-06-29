@@ -1,8 +1,9 @@
 'use strict';
 
-const config = require('./config');
 
+const delay = require('delay');
 const MongoClient = require('mongodb').MongoClient;
+const config = require('./config');
 
 function PubChemConnection() {}
 
@@ -27,7 +28,15 @@ PubChemConnection.prototype.getMfStatsCollection = async function getDatabase() 
 };
 
 PubChemConnection.prototype.getDatabase = async function getDatabase() {
-  await this.init();
+  while (true) {
+    try {
+      await this.init();
+      break;
+    } catch (e) {
+      console.log('Connection to mongo failed, waiting 5s');
+      await delay(5000);
+    }
+  }
   return this.connection.db(config.databaseName);
 };
 
