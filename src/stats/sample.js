@@ -7,9 +7,7 @@ process.on('unhandledRejection', function (e) {
 const bluebird = require('bluebird');
 const co = require('co');
 const CC = require('chemcalc');
-
 const fs = bluebird.promisifyAll(require('fs-extra'));
-
 const mongo = require('mongo');
 const functions = require('mf');
 const rules = require('rules');

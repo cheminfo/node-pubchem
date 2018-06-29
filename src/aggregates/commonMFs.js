@@ -31,7 +31,8 @@ async function commonMFs(pubChemConnection) {
     { $out: 'commonMFs' }
   ],
   {
-    allowDiskUse: true
+    allowDiskUse: true,
+    maxTimeMS: 60 * 60 * 1000, // 1h
   }
   );
   await result.hasNext();

@@ -22,7 +22,8 @@ async function CHNOSClF(pubChemConnection) {
     { $group: { _id: '$mf', count: { $sum: 1 }, em: { $first: '$em' }, unsaturation: { $first: '$unsat' } } },
     { $out: 'mfsCHNOSClF' }
   ], {
-    allowDiskUse: true
+    allowDiskUse: true,
+    maxTimeMS: 60 * 60 * 1000, // 1h
   });
   await result.hasNext(); // trigger the creation of the output collection
   return result;

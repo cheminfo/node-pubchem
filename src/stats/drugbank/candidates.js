@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs-extra');
-
 const CC = require('chemcalc');
 const mkdirp = require('mkdirp').sync;
 

@@ -1,8 +1,6 @@
 'use strict';
 
 const fs = require('fs-extra');
-const ftp = require('basic-ftp');
-const arrayDifference = require('array-difference');
 
 const config = require('../../util/config');
 

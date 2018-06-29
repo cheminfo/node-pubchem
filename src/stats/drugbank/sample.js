@@ -1,8 +1,8 @@
 'use strict';
 
-const fs = require('fs-extra');
 const path = require('path');
 
+const fs = require('fs-extra');
 const mfUtil = require('mf');
 const rules = require('rules');
 

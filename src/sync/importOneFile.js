@@ -40,7 +40,7 @@ module.exports = async function importOneFile(filename, pubChemConnection, optio
             result.seq = ++progress.seq;
             return collection.updateOne({ _id: result._id }, { $set: result }, { upsert: true });
           })
-          .then((result) => {
+          .then(() => {
             return adminCollection.updateOne({ _id: progress._id }, { $set: progress });
           })
       );

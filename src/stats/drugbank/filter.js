@@ -1,8 +1,8 @@
 'use strict';
 
-const fs = require('fs-extra');
 const path = require('path');
 
+const fs = require('fs-extra');
 const CC = require('chemcalc');
 const OCL = require('openchemlib-extended');
 const parse = require('sdf-parser');

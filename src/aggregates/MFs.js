@@ -30,7 +30,8 @@ async function MFs(pubChemConnection) {
     { $out: 'mfs' }
   ],
   {
-    allowDiskUse: true
+    allowDiskUse: true,
+    maxTimeMS: 60 * 60 * 1000, // 1h
   }
   );
   await result.hasNext();

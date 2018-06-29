@@ -3,12 +3,14 @@
 
 const delay = require('delay');
 const MongoClient = require('mongodb').MongoClient;
+
 const config = require('./config');
 
 function PubChemConnection() {}
 
 PubChemConnection.prototype.close = function close() {
   if (this.connection) return this.connection.close();
+  return undefined;
 };
 
 PubChemConnection.prototype.getMoleculesCollection = async function getDatabase() {
