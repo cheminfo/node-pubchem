@@ -1,27 +1,43 @@
 # node-pubchem
 
+In this project we make a copy of pubchem and carefully alculate the monoisotopic mass of each of the molecule as well as the molecular formula taking into account charges, parts and isotopes.
+
+We then provide an API that allows to quickly and efficiently search in the database.
+
 ## Setup
-
-### Create a mounted directory to access PubChem data
-
-```bash
-yum install curlftpfs
-mkdir /mnt/ftp.ncbi.nlm.nih.gov
-curlftpfs ftp.ncbi.nlm.nih.gov /mnt/ftp.ncbi.nlm.nih.gov
-```
 
 ## Provided webservice
 
-### Search MF from monoisotopic mass
+### /mfs/em
 
-http://pubchem.cheminfo.org/search/em?value=300&precision=10
+Search MF from monoisotopic mass
 
+http://pubchem.cheminfo.org/mfs/em?em=300&precision=10
 
-### Search molecule from monoisotopic mass
+Parameters:
+
+- em: the target monoisotopic mass, mandatory
+- precision: mass precision in ppm (default: 100)
+- limit: maximal number of results (default: 1000)
+
+### /molecules/em
+
+Search molecules from monoisotopic mass
 
 If must be the exact value of the EM so that is can only be used from the previous query result
 
+Parameters:
+
+- em: the target monoisotopic mass, mandatory
+
 http://pubchem.cheminfo.org/molecules/em?value=XXX
 
-### Update
+### /molecules/mf
 
+Search molecules from a molecular fomrula
+
+Parameters:
+
+- mf: the target molecular formula, mandatory
+
+If must be the exact value of the MF so that is can practically only be used from the previous query result
