@@ -1,6 +1,5 @@
 'use strict';
 
-
 const delay = require('delay');
 const MongoClient = require('mongodb').MongoClient;
 
@@ -42,17 +41,23 @@ PubChemConnection.prototype.getDatabase = async function getDatabase() {
   return this.connection.db(config.databaseName);
 };
 
-PubChemConnection.prototype.getCollection = async function getCollection(collectionName) {
+PubChemConnection.prototype.getCollection = async function getCollection(
+  collectionName
+) {
   return (await this.getDatabase()).collection(collectionName);
 };
 
 PubChemConnection.prototype.init = async function init() {
   if (this.connection) return;
-  this.connection = await MongoClient.connect(config.mongodbUrl, {
-    autoReconnect: true,
-    connectTimeoutMS: 60 * 60 * 1000,
-    socketTimeoutMS: 60 * 60 * 1000,
-  });
+
+  this.connection = await MongoClient.connect(
+    config.mongodbUrl,
+    {
+      autoReconnect: true,
+      connectTimeoutMS: 60 * 60 * 1000,
+      socketTimeoutMS: 60 * 60 * 1000
+    }
+  );
 };
 
 module.exports = PubChemConnection;
