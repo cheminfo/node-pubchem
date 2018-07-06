@@ -53,9 +53,9 @@ PubChemConnection.prototype.init = async function init() {
   this.connection = await MongoClient.connect(
     config.mongodbUrl,
     {
-      autoReconnect: true,
-      connectTimeoutMS: 60 * 60 * 1000,
-      socketTimeoutMS: 60 * 60 * 1000
+      autoReconnect: true
+      //    connectTimeoutMS: 60 * 60 * 1000,
+      //    socketTimeoutMS: 60 * 60 * 1000
     }
   );
 };

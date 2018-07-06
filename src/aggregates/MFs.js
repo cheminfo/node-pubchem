@@ -2,9 +2,6 @@
 
 const pubChemConnection = new (require('../util/PubChemConnection'))();
 
-console.log('-----------------------');
-console.log(pubChemConnection);
-
 module.exports = async function () {
   return MFs(pubChemConnection)
     .catch((e) => console.log(e))
@@ -31,7 +28,7 @@ async function MFs(pubChemConnection) {
           total: { $sum: 1 }
         }
       },
-      { $out: 'mfsX' }
+      { $out: 'mfs' }
     ],
     {
       allowDiskUse: true,
