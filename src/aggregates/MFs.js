@@ -35,8 +35,6 @@ async function MFs(pubChemConnection) {
       maxTimeMS: 60 * 60 * 1000 // 1h
     }
   );
-  console.log('CURSOR', result);
   await result.hasNext();
-  console.log('GOT RESUT');
   return result;
 }
