@@ -45,7 +45,6 @@ async function CHNOSClF(pubChemConnection) {
       maxTimeMS: 60 * 60 * 1000 // 1h
     }
   );
-  console.log('CURSOR', result);
   await result.hasNext(); // trigger the creation of the output collection
   return result;
 }
