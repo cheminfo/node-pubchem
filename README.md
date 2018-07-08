@@ -30,14 +30,17 @@ Parameters:
 
 - em: the target monoisotopic mass, mandatory
 
-http://pubchem.cheminfo.org/molecules/em?value=XXX
+http://pubchem.cheminfo.org/molecules/em?em=300
 
 ### /molecules/mf
 
 Search molecules from a molecular fomrula
 
+If must be the exact value of the MF so that is can practically only be used from the previous query result
+
 Parameters:
 
 - mf: the target molecular formula, mandatory
 
-If must be the exact value of the MF so that is can practically only be used from the previous query result
+http://pubchem.cheminfo.org/molecules/mf?mf=C10H12
+
