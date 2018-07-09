@@ -1,6 +1,6 @@
 # node-pubchem
 
-In this project we make a copy of pubchem and carefully alculate the monoisotopic mass of each of the molecule as well as the molecular formula taking into account charges, parts and isotopes.
+In this project we make a copy of pubchem and carefully calculate the monoisotopic mass of each of the molecule as well as the molecular formula taking into account charges, parts and isotopes.
 
 We then provide an API that allows to quickly and efficiently search in the database.
 
