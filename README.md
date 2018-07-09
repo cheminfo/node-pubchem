@@ -6,7 +6,7 @@ We then provide an API that allows to quickly and efficiently search in the data
 
 ## Setup
 
-`npm run server8080`s
+`npm run server8080`
 
 ## Provided webservice
 
@@ -14,7 +14,7 @@ We then provide an API that allows to quickly and efficiently search in the data
 
 Search MF from monoisotopic mass
 
-http://localhost:8080/mfs/em?em=300&precision=10
+[/mfs/em?em=300&precision=10](/mfs/em?em=300&precision=10)
 
 Parameters:
 
@@ -32,7 +32,7 @@ Parameters:
 
 - em: the target monoisotopic mass, mandatory
 
-http://localhost:8080/molecules/em?em=295.0000687128
+[/molecules/em?em=295.0000687128](molecules/em?em=295.0000687128)
 
 ### /molecules/mf
 
@@ -44,4 +44,4 @@ Parameters:
 
 - mf: the target molecular formula, mandatory
 
-http://localhost:8080/molecules/mf?mf=C10H20
+[/molecules/mf?mf=C10H20](/molecules/mf?mf=C10H20)
