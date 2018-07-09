@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "convert-readme": " md2html -w README.md; mv README.html src/server/staticPages/index.html",
+    "convert-readme": " md2html -w README.md; mkdir -p src/server/staticPages; mv README.html src/server/staticPages/index.html",
     "first-import": "node src/sync/firstImport.js",
     "cron": "node src/sync/cron.js",
     "test": "jest",
