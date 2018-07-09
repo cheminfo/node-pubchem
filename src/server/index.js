@@ -2,6 +2,7 @@
 
 const Koa = require('koa');
 const kcors = require('kcors');
+const staticKoa = require('koa-static');
 
 const router = require('./router');
 
@@ -14,5 +15,6 @@ const app = new Koa();
 
 app.use(kcors());
 app.use(router.routes());
+app.use(staticKoa(`${__dirname}/staticPages`, {}));
 
 app.listen(PORT);

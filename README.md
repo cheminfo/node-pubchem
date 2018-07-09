@@ -6,13 +6,15 @@ We then provide an API that allows to quickly and efficiently search in the data
 
 ## Setup
 
+`npm run server8080`s
+
 ## Provided webservice
 
 ### /mfs/em
 
 Search MF from monoisotopic mass
 
-http://pubchem.cheminfo.org/mfs/em?em=300&precision=10
+http://localhost:8080/mfs/em?em=300&precision=10
 
 Parameters:
 
@@ -30,7 +32,7 @@ Parameters:
 
 - em: the target monoisotopic mass, mandatory
 
-http://pubchem.cheminfo.org/molecules/em?em=300
+http://localhost:8080/molecules/em?em=295.0000687128
 
 ### /molecules/mf
 
@@ -42,5 +44,4 @@ Parameters:
 
 - mf: the target molecular formula, mandatory
 
-http://pubchem.cheminfo.org/molecules/mf?mf=C10H12
-
+http://localhost:8080/molecules/mf?mf=C10H20
