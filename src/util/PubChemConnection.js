@@ -54,6 +54,7 @@ PubChemConnection.prototype.init = async function init() {
     config.mongodbUrl,
     {
       autoReconnect: true,
+      keepAlive: true,
       connectTimeoutMS: 60 * 60 * 1000,
       socketTimeoutMS: 60 * 60 * 1000
     }
