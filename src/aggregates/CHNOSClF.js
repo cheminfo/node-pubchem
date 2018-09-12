@@ -31,6 +31,14 @@ async function CHNOSClF(pubChemConnection) {
         }
       },
       {
+        $project: {
+          _id: 0,
+          mf: 1,
+          em: 1,
+          unsat: 1
+        }
+      },
+      {
         $group: {
           _id: '$mf',
           count: { $sum: 1 },

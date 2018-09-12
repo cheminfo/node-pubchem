@@ -18,10 +18,10 @@ async function MFs(pubChemConnection) {
     [
       //    { $limit: 1e4 },
       { $match: { nbFragments: 1, charge: 0 } }, // we don't want charges in MF
+      { $project: { _id: 0, mf: 1, em: 1, unsaturation: 1, atom: 1 } },
       {
         $group: {
           _id: '$mf',
-          count: { $sum: 1 },
           em: { $first: '$em' },
           unsaturation: { $first: '$unsaturation' },
           atom: { $first: '$atom' },
