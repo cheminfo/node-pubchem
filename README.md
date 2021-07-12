@@ -1,3 +1,5 @@
+# The code is now maintained in https://github.com/cheminfo/docker-pubchem
+
 # node-pubchem
 
 In this project we make a copy of pubchem and carefully calculate the monoisotopic mass of each of the molecule as well as the molecular formula taking into account charges, parts and isotopes.
